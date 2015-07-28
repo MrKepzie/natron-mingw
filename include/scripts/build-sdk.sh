@@ -249,7 +249,19 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/libopenjpeg.pc ]; then
   fi
   tar xvf $SRC_PATH/$OJPG_TAR || exit 1
   cd openjpeg-* || exit 1
-  
+  OPENJPEG_PATCHES=$CWD/include/patches/openjpeg1.5.2
+
+#Not sure if needed
+#patch -Np1 -i $OPENJPEG_PATCHES/cdecl.patch  || exit 1
+#  patch -Np1 -i $OPENJPEG_PATCHES/openjpeg-1.5.1_tiff-pkgconfig.patch  || exit 1
+# patch -Np1 -i $OPENJPEG_PATCHES/mingw-install-pkgconfig-files.patch  || exit 1
+# patch -Np1 -i $OPENJPEG_PATCHES/versioned-dlls-mingw.patch || exit 1
+  rm -rf build
+  mkdir build
+  cd build
+  cmake -DCMAKE_TOOLCHAIN_FILE=$INSTALL_PATH/share/cmake/mxe-conf.cmake -DBUILD_SHARED_LIBS=FALSE -DBUILD_TESTING=FALSE .. || exit 1
+  make -j${MKJOBS} || exit 1
+  make install || exit 1
 fi
 
 # Install libraw
@@ -260,8 +272,12 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/libraw.pc ]; then
   fi
   tar xvf $SRC_PATH/$LIBRAW_TAR || exit 1
   cd LibRaw* || exit 1
+  LIBRAW_PATCHES=$CWD/include/patches/LibRaw
+  patch -Np1 -i $LIBRAW_PATCHES/LibRaw_wsock32.patch || exit 1
+  patch -Np1 -i $LIBRAW_PATCHES/LibRaw_obsolete-macros.patch || exit 1
+  rm -rf build
   mkdir build && cd build
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DCMAKE_BUILD_TYPE=Release || exit 1
+  ../configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --enable-jasper --enable-lcms
   make -j${MKJOBS} || exit 1
   make install
   mkdir -p $INSTALL_PATH/docs/libraw || exit 1
@@ -270,28 +286,9 @@ fi
 
 # Install openexr
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/OpenEXR.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $SRC_PATH/$ILM_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$ILM_TAR -O $SRC_PATH/$ILM_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$ILM_TAR || exit 1
-  cd ilmbase-* || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/openexr || exit 1
-  cp LIC* COP* README AUTH* CONT* $INSTALL_PATH/docs/openexr/
-
-  cd $TMP_PATH || exit 1
-  if [ ! -f $SRC_PATH/$EXR_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$EXR_TAR -O $SRC_PATH/$EXR_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$EXR_TAR || exit 1
-  cd openexr-* || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  cp LIC* COP* README AUTH* CONT* $INSTALL_PATH/docs/openexr/
+#Note that OpenEXR from MXE is still 2.1
+  cd $MXE_INSTALL
+  make openexr
 fi
 
 # Install magick
@@ -308,7 +305,7 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/Magick++.pc ]; then
   cat $INC_PATH/patches/composite-private.h > magick/composite-private.h || exit 1
   patch -p0< $INC_PATH/patches/magick-seed.diff || exit 1
   patch -p0< $INC_PATH/patches/magick-svg.diff || exit 1
-  CFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CXXFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --with-magick-plus-plus=yes --with-quantum-depth=32 --without-dps --without-djvu --without-fftw --without-fpx --without-gslib --without-gvc --without-jbig --without-jpeg --without-lcms --with-lcms2 --without-openjp2 --without-lqr --without-lzma --without-openexr --with-pango --with-png --with-rsvg --without-tiff --without-webp --with-xml --without-zlib --without-bzlib --enable-static --disable-shared --enable-hdri --with-freetype --with-fontconfig --without-x --without-modules || exit 1
+  CFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CXXFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --with-magick-plus-plus=yes --with-quantum-depth=32 --without-dps --without-djvu --without-fftw --without-fpx --without-gslib --without-gvc --without-jbig --without-jpeg --without-lcms --with-lcms2 --without-openjp2 --without-lqr --without-lzma --without-openexr --with-pango --with-png --with-rsvg --without-tiff --without-webp --with-xml --without-zlib --without-bzlib --enable-static --disable-shared --enable-hdri --with-freetype --with-fontconfig --without-x --without-modules || exit 1
   make -j${MKJOBS} || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/imagemagick || exit 1
@@ -317,49 +314,20 @@ fi
 
 # Install glew
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/glew.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $SRC_PATH/$GLEW_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$GLEW_TAR -O $SRC_PATH/$GLEW_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$GLEW_TAR || exit 1
-  cd glew-* || exit 1
-  if [ "$ARCH" == "i686" ]; then
-    make -j${MKJOBS} 'CFLAGS.EXTRA=-O2 -g -march=i686 -mtune=i686' includedir=/usr/include GLEW_DEST= libdir=/usr/lib bindir=/usr/bin || exit 1
-  else
-    make -j${MKJOBS} 'CFLAGS.EXTRA=-O2 -g -m64 -fPIC -mtune=generic' includedir=/usr/include GLEW_DEST= libdir=/usr/lib64 bindir=/usr/bin || exit 1
-  fi
-  make install GLEW_DEST=$INSTALL_PATH libdir=/lib bindir=/bin includedir=/include || exit 1
-  mkdir -p $INSTALL_PATH/docs/glew || exit 1
-  cp LICENSE.txt README.txt $INSTALL_PATH/docs/glew/ || exit 1
+  cd $MXE_INSTALL
+  make glew
 fi
 
 # Install pixman
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/pixman-1.pc ]; then
-  if [ ! -f $SRC_PATH/$PIX_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$PIX_TAR -O $SRC_PATH/$PIX_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$PIX_TAR || exit 1
-  cd pixman-* || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --disable-shared --enable-static || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/pixman || exit 1
-  cp COPYING* README AUTHORS $INSTALL_PATH/docs/pixman/ || exit 1
+  cd $MXE_INSTALL
+  make pixman
 fi
 
 # Install cairo
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/cairo.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $SRC_PATH/$CAIRO_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$CAIRO_TAR -O $SRC_PATH/$CAIRO_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$CAIRO_TAR || exit 1
-  cd cairo-* || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include -I${INSTALL_PATH}/include/pixman-1" LDFLAGS="-L${INSTALL_PATH}/lib -lpixman-1" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --enable-static || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/cairo || exit 1
-  cp COPYING* README AUTHORS $INSTALL_PATH/docs/cairo/ || exit 1
+  cd $MXE_INSTALL
+  make cairo
 fi
 
 # Install ocio
@@ -372,9 +340,7 @@ if [ ! -f $INSTALL_PATH/lib/libOpenColorIO.so ]; then
   cd OpenColorIO-* || exit 1
   mkdir build || exit 1
   cd build || exit 1
-  #CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DCMAKE_BUILD_TYPE=Release -DOCIO_BUILD_JNIGLUE=OFF -DOCIO_BUILD_NUKE=OFF -DOCIO_BUILD_SHARED=ON -DOCIO_BUILD_STATIC=OFF -DOCIO_STATIC_JNIGLUE=OFF -DUSE_EXTERNAL_LCMS=ON -DOCIO_BUILD_TRUELIGHT=OFF -DUSE_EXTERNAL_TINYXML=OFF -DUSE_EXTERNAL_YAML=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_USE_BOOST_PTR=ON -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_PYGLUE=OFF
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DCMAKE_BUILD_TYPE=Release -DOCIO_BUILD_SHARED=ON -DOCIO_BUILD_STATIC=OFF || exit 1
-  # dont work, wtf! #-DUSE_EXTERNAL_LCMS=ON || exit 1
+  CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_TOOLCHAIN_FILE=$INSTALL_PATH/share/cmake/mxe-conf.cmake -DOCIO_BUILD_SHARED=OFF -DOCIO_BUILD_STATIC=ON || exit 1
   make -j${MKJOBS} || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/ocio || exit 1
