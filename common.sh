@@ -42,7 +42,7 @@ COLOR_PROFILES_VERSION=2.0
 
 if [ -z "$MXE_INSTALL" ]; then
     git submodule update -i --recursive
-    MXE_INSTALL=mxe
+    MXE_INSTALL=$CWD/mxe
 fi
 
 if [ -f $MXE_INSTALL/settings.mk ]; then
