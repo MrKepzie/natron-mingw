@@ -54,9 +54,9 @@ if [ ! -d $SRC_PATH ]; then
 fi
 
 #Make sure GCC is installed
-if [ ! -f ${CROSS_PREFIX}gcc ]; then
-    make gcc || exit 1
-fi
+#if [ ! -f ${CROSS_PREFIX}gcc ]; then
+#    make gcc || exit 1
+#fi
 
 # Install yasm
 if [ ! -f $INSTALL_PATH/bin/yasm.exe ]; then
