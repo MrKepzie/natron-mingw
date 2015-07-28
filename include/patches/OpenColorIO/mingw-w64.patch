@@ -1,0 +1,29 @@
+--- CMakeLists_new.txt	2013-10-09 00:59:34.000000000 +0200
++++ CMakeLists.txt	2015-07-28 16:25:23.000000000 +0200
+@@ -34,7 +34,7 @@
+ option(OCIO_PYGLUE_SONAME "If ON, soname/soversion will be set for Python module library" OFF)
+ option(OCIO_PYGLUE_LIB_PREFIX "If ON, prefix the Python module with 'lib'" OFF)
+ 
+-if(UNIX AND NOT APPLE)
++if(UNIX OR MINGW AND NOT APPLE)
+     option(USE_EXTERNAL_YAML "Use system installed yaml-cpp library." OFF)
+     option(USE_EXTERNAL_TINYXML "Use system installed tinyxml library." OFF)
+     option(USE_EXTERNAL_LCMS "Use system install lcms2 library." OFF)
+@@ -123,7 +123,7 @@
+     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic")
+ endif(CMAKE_COMPILER_IS_GNUCXX)
+ 
+-if(WIN32)
++if(WIN32 AND NOT MINGW)
+     if(PYTHON_VERSION AND PYTHON_INCLUDE AND PYTHON_LIB)
+         set(EXTDIST_PYTHONPATH ${PYTHON_LIB}/python${PYTHON_VARIANT_PATH}/site-packages)
+         set(PYTHONPATH ${EXTDIST_PYTHONPATH};$ENV{PYTHONPATH})
+@@ -271,7 +271,7 @@
+ messageonce("SSE Optimizations: ${OCIO_USE_SSE}")
+ 
+ if(OCIO_USE_SSE)
+-    if(WIN32)
++    if(WIN32 AND NOT MINGW)
+         # SSE instructions are automatically compiled into 64-bit applications so enabling the option is redundant and
+         # actually produces an unknown option warning in Visual Studio.
+         if(NOT CMAKE_CL_64)

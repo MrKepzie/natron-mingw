@@ -134,6 +134,7 @@ LIBRAW_TAR=LibRaw-0.16.0.tar.gz
 PIX_TAR=pixman-0.32.6.tar.gz
 LCMS_TAR=lcms2-2.6.tar.gz
 MAGICK_TAR=ImageMagick-6.8.9-10.tar.gz
+GIF_TAR=giflib-5.1.1.tar.gz
 #SSL_TAR=openssl-1.0.0r.tar.gz 
 JASP_TAR=jasper-1.900.1.zip
 NATRON_API_DOC=https://media.readthedocs.org/pdf/natron/workshop/natron.pdf # TODO generate own

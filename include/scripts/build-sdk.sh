@@ -165,7 +165,7 @@ patch -Np1 -i $PYTHON_PATCHES/1000-fix-building-posixmodule.patch
 patch -Np1 -i $PYTHON_PATCHES/1010-install-msilib.patch
 
 patch -Np1 -i $PYTHON_PATCHES/1500-mingw-w64-dont-look-in-DLLs-folder-for-python-dll.patch
-patch -Np1 -i $PYTHON_PATCHES/0010-CROSS-warn-only-if-readelf-is-not-in-host-triplet-fo.patch
+patch -u configure.ac $PYTHON_PATCHES/0010-CROSS-warn-only-if-readelf-is-not-in-host-triplet-fo.patch
 
 autoreconf -vfi
 # Temporary workaround for FS#22322
@@ -281,7 +281,7 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/libraw.pc ]; then
   patch -Np1 -i $LIBRAW_PATCHES/LibRaw_obsolete-macros.patch || exit 1
   rm -rf build
   mkdir build && cd build
-  ../configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --enable-jasper --enable-lcms
+  ../configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --enable-jasper --enable-lcms --enable-static --disable-shared
   make -j${MKJOBS} || exit 1
   make install
   mkdir -p $INSTALL_PATH/docs/libraw || exit 1
@@ -309,7 +309,7 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/Magick++.pc ]; then
   cat $INC_PATH/patches/composite-private.h > magick/composite-private.h || exit 1
   patch -p0< $INC_PATH/patches/magick-seed.diff || exit 1
   patch -p0< $INC_PATH/patches/magick-svg.diff || exit 1
-  CFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CXXFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --with-magick-plus-plus=yes --with-quantum-depth=32 --without-dps --without-djvu --without-fftw --without-fpx --without-gslib --without-gvc --without-jbig --without-jpeg --without-lcms --with-lcms2 --without-openjp2 --without-lqr --without-lzma --without-openexr --with-pango --with-png --with-rsvg --without-tiff --without-webp --with-xml --without-zlib --without-bzlib --enable-static --disable-shared --enable-hdri --with-freetype --with-fontconfig --without-x --without-modules || exit 1
+  CFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CXXFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1"  ./configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --with-magick-plus-plus=yes --with-quantum-depth=32 --without-dps --without-djvu --without-fftw --without-fpx --without-gslib --without-gvc --without-jbig --without-jpeg --without-lcms --with-lcms2 --without-openjp2 --without-lqr --without-lzma --without-openexr --with-pango --with-png --with-rsvg --without-tiff --without-webp --with-xml --without-zlib --without-bzlib --enable-static --disable-shared --enable-hdri --with-freetype --with-fontconfig --without-x --without-modules || exit 1
   make -j${MKJOBS} || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/imagemagick || exit 1
@@ -334,18 +334,29 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/cairo.pc ]; then
   make cairo
 fi
 
+# Install giflib
+if [ ! -f $INSTALL_PATH/lib/libgif.a ]; then
+    cd $MXE_INSTALL
+    make giflib
+fi
+
 # Install ocio
-if [ ! -f $INSTALL_PATH/lib/libOpenColorIO.so ]; then
+if [ ! -f $INSTALL_PATH/lib/libOpenColorIO.a ]; then
   cd $TMP_PATH || exit 1
   if [ ! -f $SRC_PATH/$OCIO_TAR ]; then
     wget $THIRD_PARTY_SRC_URL/$OCIO_TAR -O $SRC_PATH/$OCIO_TAR || exit 1
   fi
   tar xvf $SRC_PATH/$OCIO_TAR || exit 1
   cd OpenColorIO-* || exit 1
+  OCIO_PATCHES=$CWD/include/patches/OpenColorIO
+  patch -u CMakeLists.txt ${OCIO_PATCHES}/mingw-w64.patch
+  patch -p1 -i ${OCIO_PATCHES}/fix-redefinitions.patch
+  patch -p1 -i ${OCIO_PATCHES}/detect-mingw-python.patch
+
   mkdir build || exit 1
   cd build || exit 1
-  CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_TOOLCHAIN_FILE=$INSTALL_PATH/share/cmake/mxe-conf.cmake -DOCIO_BUILD_SHARED=OFF -DOCIO_BUILD_STATIC=ON || exit 1
-  make -j${MKJOBS} || exit 1
+  cmake -DCMAKE_TOOLCHAIN_FILE=$INSTALL_PATH/share/cmake/mxe-conf.cmake -DOCIO_BUILD_SHARED=OFF -DOCIO_BUILD_STATIC=ON  -DOCIO_BUILD_PYGLUE=OFF -DOCIO_USE_BOOST_PTR=ON -DOCIO_BUILD_APPS=OFF .. || exit 1
+  make || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/ocio || exit 1
   cp ../LICENSE ../README $INSTALL_PATH/docs/ocio/ || exit 1
@@ -355,16 +366,22 @@ fi
 if [ "$REBUILD_OIIO" == "1" ]; then
   rm -rf $INSTALL_PATH/lib/libOpenImage* $INSTALL_PATH/include/OpenImage*
 fi
-if [ ! -f $INSTALL_PATH/lib/libOpenImageIO.so ]; then
+if [ ! -f $INSTALL_PATH/lib/libOpenImageIO.a ]; then
   cd $TMP_PATH || exit 1
   if [ ! -f $SRC_PATH/$OIIO_TAR ]; then
     wget $THIRD_PARTY_SRC_URL/$OIIO_TAR -O $SRC_PATH/$OIIO_TAR || exit 1
   fi
   tar xvf $SRC_PATH/$OIIO_TAR || exit 1
   cd oiio-Release-* || exit 1
+  OIIO_PATCHES=$CWD/include/OpenImageIO
+  patch -p1 -i ${OIIO_PATCHES}/fix-mingw-w64.patch
+  patch -p1 -i ${OIIO_PATCHES}/workaround-ansidecl-h-PTR-define-conflict.patch
+  patch -p1 -i ${OIIO_PATCHES}/0001-MinGW-w64-include-winbase-h-early-for-TCHAR-types.patch
+  patch -p1 -i ${OIIO_PATCHES}/0002-Also-link-to-opencv_videoio-library.patch
+
   mkdir build || exit 1
   cd build || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" CXXFLAGS="-fPIC" cmake -DUSE_OPENSSL:BOOL=FALSE -DOPENEXR_HOME=$INSTALL_PATH -DILMBASE_HOME=$INSTALL_PATH -DTHIRD_PARTY_TOOLS_HOME=$INSTALL_PATH -DUSE_QT:BOOL=FALSE -DUSE_TBB:BOOL=FALSE -DUSE_PYTHON:BOOL=FALSE -DUSE_FIELD3D:BOOL=FALSE -DUSE_OPENJPEG:BOOL=FALSE  -DOIIO_BUILD_TESTS=0 -DOIIO_BUILD_TOOLS=0 -DUSE_LIB_RAW=1 -DLIBRAW_PATH=$INSTALL_PATH -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DBOOST_ROOT=$INSTALL_PATH -DSTOP_ON_WARNING:BOOL=FALSE -DUSE_GIF:BOOL=TRUE -DUSE_FREETYPE:BOOL=TRUE -DFREETYPE_INCLUDE_PATH=$INSTALL_PATH/include -DUSE_FFMPEG:BOOL=FALSE .. || exit 1
+  cmake -DCMAKE_TOOLCHAIN_FILE=$INSTALL_PATH/share/cmake/mxe-conf.cmake -DBUILDSTATIC=ON -DUSE_OPENSSL:BOOL=FALSE -DOPENEXR_HOME=$INSTALL_PATH -DILMBASE_HOME=$INSTALL_PATH -DTHIRD_PARTY_TOOLS_HOME=$INSTALL_PATH -DUSE_QT:BOOL=FALSE -DUSE_TBB:BOOL=FALSE -DUSE_PYTHON:BOOL=FALSE -DUSE_FIELD3D:BOOL=FALSE -DUSE_OPENJPEG:BOOL=TRUE  -DOIIO_BUILD_TESTS=0 -DOIIO_BUILD_TOOLS=0 -DLIBRAW_PATH=$INSTALL_PATH -DBOOST_ROOT=$INSTALL_PATH -DSTOP_ON_WARNING:BOOL=FALSE -DUSE_GIF:BOOL=TRUE -DUSE_FREETYPE:BOOL=TRUE -DFREETYPE_INCLUDE_PATH=$INSTALL_PATH/include -DUSE_FFMPEG:BOOL=FALSE .. || exit 1
   make -j${MKJOBS} || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/oiio || exit 1
