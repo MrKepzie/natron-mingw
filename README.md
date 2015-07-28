@@ -31,3 +31,10 @@ Create the local.sh file in the root of natron-mingw-cross to specify various in
     
 
 If MXE_INSTALL is not specified then it will use the MXE submodule
+
+RHEL/CentOS 7.x requirements:
+
+```
+yum install -y epel-release
+yum install wget git autoconf automake bash bison bzip2 cmake flex gcc-c++ gettext git gperf intltool make sed libffi-devel libtool openssl-devel p7* patch perl pkgconfig python ruby scons unzip wget xz glibc-devel.i686 libstdc*.i686
+```

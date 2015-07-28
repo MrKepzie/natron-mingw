@@ -9,14 +9,14 @@ source $(pwd)/common.sh || exit 1
 
 if [ "$1" == "32" ]; then
     BIT=32
-    TARGET=TARGET32
-    INSTALL_PATH=INSTALL32_PATH
-    CROSS_PREFIX=CROSS_PREFIX32
+    TARGET=$TARGET32
+    INSTALL_PATH=$INSTALL32_PATH
+    CROSS_PREFIX=$CROSS_PREFIX32
 elif [ "$1" == "64" ]; then
     BIT=64
-    TARGET=TARGET64
-    INSTALL_PATH=INSTALL64_PATH
-    CROSS_PREFIX=CROSS_PREFIX64
+    TARGET=$TARGET64
+    INSTALL_PATH=$INSTALL64_PATH
+    CROSS_PREFIX=$CROSS_PREFIX64
 else
     echo "Usage build-sdk.sh <BIT>"
     exit 1
@@ -34,7 +34,7 @@ fi
 
 
 echo
-echo "Building $SDK using GCC 4.$GCC_V_FULL with $MKJOBS threads ..."
+echo "Building $SDK using with $MKJOBS threads ..."
 echo
 sleep 2
 
@@ -54,14 +54,14 @@ if [ ! -d $SRC_PATH ]; then
 fi
 
 #Make sure GCC is installed
-if [ ! -f ${CROSS_PREFIX}gcc ]; then
-    make gcc
-fi
+#if [ ! -f ${CROSS_PREFIX}gcc ]; then
+#    make gcc || exit 1
+#fi
 
 # Install yasm
 if [ ! -f $INSTALL_PATH/bin/yasm.exe ]; then
   cd $MXE_INSTALL
-  make yasm
+  make yasm || exit 1
 fi
 
 # Install Python3

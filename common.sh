@@ -42,7 +42,7 @@ COLOR_PROFILES_VERSION=2.0
 
 if [ -z "$MXE_INSTALL" ]; then
     git submodule update -i --recursive
-    MXE_INSTALL=mxe
+    MXE_INSTALL=$CWD/mxe
 fi
 
 if [ -f $MXE_INSTALL/settings.mk ]; then
@@ -61,7 +61,7 @@ INSTALL32_PATH=$MXE_INSTALL/usr/$TARGET32
 INSTALL64_PATH=$MXE_INSTALL/usr/$TARGET64
 CROSS_PREFIX32=$MXE_INSTALL/usr/bin/${TARGET32}-
 CROSS_PREFIX64=$MXE_INSTALL/usr/bin/${TARGET64}-
-BUILD_MACHINE=$(MXE_INSTALL/ext/config.guess)
+BUILD_MACHINE=$MXE_INSTALL/ext/config.guess
 
 # Common values
 #
@@ -138,25 +138,6 @@ GIF_TAR=giflib-5.1.1.tar.gz
 #SSL_TAR=openssl-1.0.0r.tar.gz 
 JASP_TAR=jasper-1.900.1.zip
 NATRON_API_DOC=https://media.readthedocs.org/pdf/natron/workshop/natron.pdf # TODO generate own
-
-# GCC version
-#
-# Check for minimal required GCC version
-
-GCC_V_FULL=$(${CROSS_PREFIX64}gcc --version)
-GCC_MAJOR = $(echo "${GCC_V_FULL}" | awk '/gcc /{print $0;exit 0;}' | awk '{print $3}' | sed 's#\.# #g' | awk '{print $1}')
-GCC_MINOR = $(echo "${GCC_V_FULL}" | awk '/gcc /{print $0;exit 0;}' | awk '{print $3}' | sed 's#\.# #g' | awk '{print $2}')
-
-if [ "$GCC_MAJOR" -lt "4" ]; then
-  echo "You must have at least GCC 4 installed."
-  exit 1
-fi
-
-if [ "$GCC_MAJOR" -eq "4" ] && [ "$GCC_MINOR" -lt "7" ]; then
-    echo "You must have at least GCC 4.7 installed."
-    exit 1
-fi
-
 
 # Arch
 #
