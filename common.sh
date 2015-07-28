@@ -7,10 +7,8 @@
 #The local.sh file must exist, please see the README.
 source $(pwd)/local.sh || exit 1
 
-if [ -z "$MXE_INSTALL" ]; then
-    echo "Invalid local.sh"
-    exit 1
-fi
+CWD=$(pwd)
+
 
 #THE FOLLOWING CAN BE MODIFIED TO CONFIGURE RELEASE BUILDS
 #----------------------------------------------------------
@@ -42,6 +40,20 @@ COLOR_PROFILES_VERSION=2.0
 # SDK
 #
 
+if [ -z "$MXE_INSTALL" ]; then
+    git submodule update -i --recursive
+    MXE_INSTALL=mxe
+fi
+
+if [ -f $MXE_INSTALL/settings.mk ]; then
+    echo 'JOBS := 8' > $MXE_INSTALL/settings.mk
+    echo 'MXE_TARGETS := x86_64-w64-mingw32.static i686-w64-mingw32.static' > $MXE_INSTALL/settings.mk
+#LOCAL_PKG_LIST := winpthreads pcre zlib lzo bzip2 cunit
+#.DEFAULT local-pkg-list:
+#local-pkg-list: $(LOCAL_PKG_LIST)
+
+fi
+
 SDK_VERSION=2.0
 TARGET32=i686-w64-mingw32.static
 TARGET64=x86_64-w64-mingw32.static
@@ -54,7 +66,6 @@ BUILD_MACHINE=$(MXE_INSTALL/ext/config.guess)
 # Common values
 #
 
-CWD=$(pwd)
 TMP_PATH=$CWD/tmp
 SRC_PATH=$CWD/src
 INC_PATH=$CWD/include

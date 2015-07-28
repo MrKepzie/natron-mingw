@@ -53,6 +53,10 @@ if [ ! -d $SRC_PATH ]; then
   mkdir -p $SRC_PATH || exit 1
 fi
 
+#Make sure GCC is installed
+if [ ! -f ${CROSS_PREFIX}gcc ]; then
+    make gcc
+fi
 
 # Install yasm
 if [ ! -f $INSTALL_PATH/bin/yasm.exe ]; then

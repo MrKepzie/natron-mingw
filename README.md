@@ -29,3 +29,5 @@ Create the local.sh file in the root of natron-mingw-cross to specify various in
     REPO_DEST=mrkepzie@vps163799.ovh.net:../www/downloads.natron.fr
     REPO_URL=http://downloads.natron.fr
     
+
+If MXE_INSTALL is not specified then it will use the MXE submodule
