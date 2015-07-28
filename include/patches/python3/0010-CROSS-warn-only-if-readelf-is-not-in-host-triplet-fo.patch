@@ -1,0 +1,13 @@
+--- configure.ac.old	2015-02-25 12:27:46.000000000 +0100
++++ configure.ac	2015-07-28 10:51:36.000000000 +0200
+@@ -1024,8 +1024,8 @@
+ AC_CHECK_TOOLS([READELF], [readelf], [:])
+ if test "$cross_compiling" = yes; then
+     case "$READELF" in
+-	readelf|:)
+-	AC_MSG_ERROR([readelf for the host is required for cross builds])
++	readelf)
++	AC_MSG_WARN([readelf is not in host triplet format])
+ 	;;
+     esac
+ fi
