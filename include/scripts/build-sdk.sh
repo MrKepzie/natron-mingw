@@ -290,9 +290,9 @@ fi
 
 # Install openexr
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/OpenEXR.pc ]; then
-#Note that OpenEXR from MXE is still 2.1
-  cd $MXE_INSTALL
-  make openexr
+    cd $MXE_INSTALL
+    make ilmbase
+    make openexr
 fi
 
 # Install magick
