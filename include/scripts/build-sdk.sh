@@ -390,40 +390,14 @@ fi
 
 # Install eigen
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/eigen3.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $CWD/src/$EIGEN_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$EIGEN_TAR -O $CWD/src/$EIGEN_TAR || exit 1
-  fi
-  tar xvf $CWD/src/$EIGEN_TAR || exit 1
-  cd eigen-* || exit 1
-  rm -rf build
-  mkdir build || exit 1
-  cd build || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/eigen || exit 1
-  cp ../LIC* ../COP* ../README ../AUTH* ../CONT* $INSTALL_PATH/docs/eigen/
-  mv $INSTALL_PATH/share/pkgconfig/* $INSTALL_PATH/lib/pkgconfig
+  cd $MXE_INSTALL
+  make eigen
 fi
 
 # Install opencv
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/opencv.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $CWD/src/$CV_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$CV_TAR -O $CWD/src/$CV_TAR || exit 1
-  fi
-  unzip $CWD/src/$CV_TAR || exit 1
-  cd opencv* || exit 1
-#patch -p1 < $INC_PATH/patches/opencv-pkgconfig.patch || exit 1
-#patch -p0 < $INC_PATH/patches/opencv-cmake.diff || exit 1
-  mkdir build || exit 1
-  cd build || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CMAKE_INCLUDE_PATH=$INSTALL_PATH/include CMAKE_LIBRARY_PATH=$INSTALL_PATH/lib CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake -DWITH_GTK=OFF -DWITH_GSTREAMER=OFF -DWITH_FFMPEG=OFF -DWITH_OPENEXR=OFF -DWITH_OPENCL=OFF -DWITH_OPENGL=ON -DBUILD_WITH_DEBUG_INFO=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_SSE3=OFF .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/opencv || exit 1
-  cp ../LIC* ../COP* ../README ../AUTH* ../CONT* $INSTALL_PATH/docs/opencv/
+  cd $MXE_INSTALL
+  make opencv
 fi
 
 # Install ffmpeg
@@ -447,33 +421,8 @@ fi
 
 # Install qt
 if [ ! -f $INSTALL_PATH/bin/qmake ]; then
-  cd $TMP_PATH || exit 1
-  if [ "$1" == "qt5" ]; then
-    QT_TAR=$QT5_TAR
-    QT_CONF="-no-openssl -opengl desktop -opensource -nomake examples -nomake tests -release -no-gtkstyle -confirm-license -no-c++11 -I${INSTALL_PATH}/include -L${INSTALL_PATH}/lib"
-  else
-    QT_TAR=$QT4_TAR
-    QT_CONF="-no-multimedia -no-openssl -confirm-license -release -opensource -opengl desktop -nomake demos -nomake docs -nomake examples -no-gtkstyle -no-webkit -I${INSTALL_PATH}/include -L${INSTALL_PATH}/lib"
-  fi
-
-  if [ ! -f $SRC_PATH/$QT_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$QT_TAR -O $SRC_PATH/$QT_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$QT_TAR || exit 1
-  cd qt* || exit 1
-  QT_SRC=$(pwd)/src
-  if [ "$1" == "qt5" ]; then
-    patch -p0< $INC_PATH/patches/no-egl-in-qt5.diff || exit 1
-  fi
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure -prefix $INSTALL_PATH $QT_CONF -shared || exit 1
-
-  # https://bugreports.qt-project.org/browse/QTBUG-5385
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/lib make -j${MKJOBS} || exit  1
-
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/qt || exit 1
-  cp README LICENSE.LGPL LGPL_EXCEPTION.txt $INSTALL_PATH/docs/qt/ || exit 1
-  rm -rf $TMP_PATH/qt*
+  cd $MXE_INSTALL || exit 1
+  make qt
 fi
 
 # Force py3
