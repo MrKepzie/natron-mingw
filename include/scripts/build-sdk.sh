@@ -42,8 +42,6 @@ if [ ! -z "$REBUILD" ]; then
   if [ -d $INSTALL_PATH ]; then
     rm -rf $INSTALL_PATH || exit 1
   fi
-else
-  echo "Rebuilding ..."
 fi
 if [ -d $TMP_PATH ]; then
   rm -rf $TMP_PATH || exit 1
@@ -64,150 +62,204 @@ if [ ! -f $INSTALL_PATH/bin/yasm.exe ]; then
   make yasm || exit 1
 fi
 
-# Install Python3
-if [ ! -f $INSTALL_PATH/lib/pkgconfig/python3.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $SRC_PATH/$PY3_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$PY3_TAR -O $SRC_PATH/$PY3_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$PY3_TAR || exit 1
-  cd Python-3* || exit 1
-  PYTHON_PATCHES=$CWD/include/patches/python3
-  rm -f Misc/config_mingw Misc/cross_mingw32 Python/fileblocks.c
+export PATH=$MXE_INSTALL/usr/bin:$INSTALL_PATH/bin:$PATH
 
-patch -Np1 -i $PYTHON_PATCHES/0000-make-_sysconfigdata.py-relocatable.patch
 
-patch -Np1 -i $PYTHON_PATCHES/0100-MINGW-BASE-use-NT-thread-model.patch
-patch -Np1 -i $PYTHON_PATCHES/0110-MINGW-translate-gcc-internal-defines-to-python-platf.patch
-patch -Np1 -i $PYTHON_PATCHES/0130-MINGW-configure-MACHDEP-and-platform-for-build.patch
-patch -Np1 -i $PYTHON_PATCHES/0140-MINGW-preset-configure-defaults.patch
-patch -Np1 -i $PYTHON_PATCHES/0150-MINGW-configure-largefile-support-for-windows-builds.patch
-patch -Np1 -i $PYTHON_PATCHES/0160-MINGW-add-wincrypt.h-in-Python-random.c.patch
-patch -Np1 -i $PYTHON_PATCHES/0170-MINGW-add-srcdir-PC-to-CPPFLAGS.patch
-patch -Np1 -i $PYTHON_PATCHES/0180-MINGW-init-system-calls.patch
-patch -Np1 -i $PYTHON_PATCHES/0190-MINGW-detect-REPARSE_DATA_BUFFER.patch
-patch -Np1 -i $PYTHON_PATCHES/0200-MINGW-build-in-windows-modules-winreg.patch
-patch -Np1 -i $PYTHON_PATCHES/0210-MINGW-determine-if-pwdmodule-should-be-used.patch
-patch -Np1 -i $PYTHON_PATCHES/0220-MINGW-default-sys.path-calculations-for-windows-plat.patch
-patch -Np1 -i $PYTHON_PATCHES/0230-MINGW-AC_LIBOBJ-replacement-of-fileblocks.patch
-patch -Np1 -i $PYTHON_PATCHES/0240-MINGW-use-main-to-start-execution.patch
+#install gdbm
+#if [ ! -f $INSTALL_PATH/lib/libgdbm.a ]; then
 
-patch -Np1 -i $PYTHON_PATCHES/0250-MINGW-compiler-customize-mingw-cygwin-compilers.patch
-patch -Np1 -i $PYTHON_PATCHES/0260-MINGW-compiler-enable-new-dtags.patch
+    cd $TMP_PATH || exit 1
+    if [ ! -f $SRC_PATH/$GDBM_TAR ]; then
+        wget $THIRD_PARTY_SRC_URL/$GDBM_TAR -O $SRC_PATH/$GDBM_TAR || exit 1
+    fi
+    tar xvf $SRC_PATH/$GDBM_TAR || exit 1
+    cd gdbm* || exit
+    GDBM_PATCHES=$CWD/include/patches/gdbm
+    patch -p1 -i ${GDBM_PATCHES}/gdbm-1.10-zeroheaders.patch
+    patch -p0 -i ${GDBM_PATCHES}/gdbm-win32-support.patch
 
-patch -Np1 -i $PYTHON_PATCHES/0270-CYGWIN-issue13756-Python-make-fail-on-cygwin.patch
-patch -Np1 -i $PYTHON_PATCHES/0290-issue6672-v2-Add-Mingw-recognition-to-pyport.h-to-al.patch
-patch -Np1 -i $PYTHON_PATCHES/0300-MINGW-configure-for-shared-build.patch
-patch -Np1 -i $PYTHON_PATCHES/0310-MINGW-dynamic-loading-support.patch
-patch -Np1 -i $PYTHON_PATCHES/0320-MINGW-implement-exec-prefix.patch
-patch -Np1 -i $PYTHON_PATCHES/0330-MINGW-ignore-main-program-for-frozen-scripts.patch
-patch -Np1 -i $PYTHON_PATCHES/0340-MINGW-setup-exclude-termios-module.patch
-patch -Np1 -i $PYTHON_PATCHES/0350-MINGW-setup-_multiprocessing-module.patch
-patch -Np1 -i $PYTHON_PATCHES/0360-MINGW-setup-select-module.patch
-patch -Np1 -i $PYTHON_PATCHES/0370-MINGW-setup-_ctypes-module-with-system-libffi.patch
-patch -Np1 -i $PYTHON_PATCHES/0380-MINGW-defect-winsock2-and-setup-_socket-module.patch
-patch -Np1 -i $PYTHON_PATCHES/0390-MINGW-exclude-unix-only-modules.patch
-patch -Np1 -i $PYTHON_PATCHES/0400-MINGW-setup-msvcrt-and-_winapi-modules.patch
-patch -Np1 -i $PYTHON_PATCHES/0410-MINGW-build-extensions-with-GCC.patch
-patch -Np1 -i $PYTHON_PATCHES/0420-MINGW-use-Mingw32CCompiler-as-default-compiler-for-m.patch
-patch -Np1 -i $PYTHON_PATCHES/0430-MINGW-find-import-library.patch
-patch -Np1 -i $PYTHON_PATCHES/0440-MINGW-setup-_ssl-module.patch
-patch -Np1 -i $PYTHON_PATCHES/0460-MINGW-generalization-of-posix-build-in-sysconfig.py.patch
-patch -Np1 -i $PYTHON_PATCHES/0462-MINGW-support-stdcall-without-underscore.patch
-patch -Np1 -i $PYTHON_PATCHES/0464-use-replace-instead-rename-to-avoid-failure-on-windo.patch
-patch -Np1 -i $PYTHON_PATCHES/0470-MINGW-avoid-circular-dependency-from-time-module-dur.patch
-patch -Np1 -i $PYTHON_PATCHES/0480-MINGW-generalization-of-posix-build-in-distutils-sys.patch
-patch -Np1 -i $PYTHON_PATCHES/0490-MINGW-customize-site.patch
+    ./configure --host=$TARGET --target=$TARGET  --prefix=$INSTALL_PATH --enable-static --enable-shared --disable-libgdbm-compat || exit 1
+#patch -u src/Makefile.in ${GDBM_PATCHES}/LinkAgainstWs32.patch
+    make -j${MK_JOBS} || exit 1
+    make install || exit 1
+#fi
 
-patch -Np1 -i $PYTHON_PATCHES/0500-add-python-config-sh.patch
-patch -Np1 -i $PYTHON_PATCHES/0510-cross-darwin-feature.patch
-patch -Np1 -i $PYTHON_PATCHES/0520-py3k-mingw-ntthreads-vs-pthreads.patch
-patch -Np1 -i $PYTHON_PATCHES/0540-mingw-semicolon-DELIM.patch
-patch -Np1 -i $PYTHON_PATCHES/0550-mingw-regen-use-stddef_h.patch
-patch -Np1 -i $PYTHON_PATCHES/0555-msys-mingw-prefer-unix-sep-if-MSYSTEM.patch
-patch -Np1 -i $PYTHON_PATCHES/0560-mingw-use-posix-getpath.patch
-patch -Np1 -i $PYTHON_PATCHES/0565-mingw-add-ModuleFileName-dir-to-PATH.patch
-patch -Np1 -i $PYTHON_PATCHES/0570-mingw-add-BUILDIN_WIN32_MODULEs-time-msvcrt.patch
-# 0610- changed to not using -DVPATH='"$(VPATH_b2h)"' anymore since VPATH is
-# relative, therefore getpath.c:355: joinpath(prefix, vpath) works naturally
-patch -Np1 -i $PYTHON_PATCHES/0610-msys-cygwin-semi-native-build-sysconfig.patch
-patch -Np1 -i $PYTHON_PATCHES/0620-mingw-sysconfig-like-posix.patch
-patch -Np1 -i $PYTHON_PATCHES/0630-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
-patch -Np1 -i $PYTHON_PATCHES/0640-mingw-x86_64-size_t-format-specifier-pid_t.patch
-patch -Np1 -i $PYTHON_PATCHES/0650-cross-dont-add-multiarch-paths-if-cross-compiling.patch
-patch -Np1 -i $PYTHON_PATCHES/0660-mingw-use-backslashes-in-compileall-py.patch
-patch -Np1 -i $PYTHON_PATCHES/0670-msys-convert_path-fix-and-root-hack.patch
-patch -Np1 -i $PYTHON_PATCHES/0690-allow-static-tcltk.patch
-patch -Np1 -i $PYTHON_PATCHES/0700-CROSS-avoid-ncursesw-include-path-hack.patch
-patch -Np1 -i $PYTHON_PATCHES/0710-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
-patch -Np1 -i $PYTHON_PATCHES/0720-mingw-pdcurses_ISPAD.patch
-patch -Np1 -i $PYTHON_PATCHES/0730-mingw-fix-ncurses-module.patch
-patch -Np1 -i $PYTHON_PATCHES/0740-grammar-fixes.patch
-patch -Np1 -i $PYTHON_PATCHES/0750-builddir-fixes.patch
-patch -Np1 -i $PYTHON_PATCHES/0760-msys-monkeypatch-os-system-via-sh-exe.patch
-patch -Np1 -i $PYTHON_PATCHES/0770-msys-replace-slashes-used-in-io-redirection.patch
-patch -Np1 -i $PYTHON_PATCHES/0790-mingw-add-_exec_prefix-for-tcltk-dlls.patch
-patch -Np1 -i $PYTHON_PATCHES/0800-mingw-install-layout-as-posix.patch
-patch -Np1 -i $PYTHON_PATCHES/0810-remove_path_max.default.patch
-patch -Np1 -i $PYTHON_PATCHES/0820-dont-link-with-gettext.patch
-patch -Np1 -i $PYTHON_PATCHES/0830-ctypes-python-dll.patch
-patch -Np1 -i $PYTHON_PATCHES/0840-gdbm-module-includes.patch
-patch -Np1 -i $PYTHON_PATCHES/0850-use-gnu_printf-in-format.patch
-patch -Np1 -i $PYTHON_PATCHES/0860-fix-_Py_CheckPython3-prototype.patch
-patch -Np1 -i $PYTHON_PATCHES/0870-mingw-fix-ssl-dont-use-enum_certificates.patch
-patch -Np1 -i $PYTHON_PATCHES/0890-mingw-build-optimized-ext.patch
-patch -Np1 -i $PYTHON_PATCHES/0900-cygwinccompiler-dont-strip-modules-if-pydebug.patch
-patch -Np1 -i $PYTHON_PATCHES/0910-fix-using-dllhandle-and-winver-mingw.patch
-patch -Np1 -i $PYTHON_PATCHES/0920-mingw-add-LIBPL-to-library-dirs.patch
-patch -Np1 -i $PYTHON_PATCHES/0930-mingw-w64-build-overlapped-module.patch
+#install db
+#if [ ! -f $INSTALL_PATH/lib/libdb.a ]; then
 
-patch -Np1 -i $PYTHON_PATCHES/1000-fix-building-posixmodule.patch
-patch -Np1 -i $PYTHON_PATCHES/1010-install-msilib.patch
+    cd $TMP_PATH || exit 1
+    if [ ! -f $SRC_PATH/$DB_TAR ]; then
+        wget $THIRD_PARTY_SRC_URL/$DB_TAR -O $SRC_PATH/$DB_TAR || exit 1
+    fi
+    tar xvf $SRC_PATH/$DB_TAR || exit 1
+    cd db* || exit
+    DB_PATCHES=$CWD/include/patches/db
+    patch -p1 -i ${DB_PATCHES}/mingw.patch
+    cd build_unix
+    env CFLAGS=$CFLAGS" -DUNICODE -D_UNICODE" CXXFLAGS=$CXXFLAGS" -DUNICODE -D_UNICODE" ../dist/configure --host=$TARGET --target=$TARGET  --prefix=$INSTALL_PATH --enable-static --enable-shared --enable-compat185 --enable-mingw  --enable-cxx --enable-stl  --disable-tcl --disable-replication --docdir='${INSTALL_PATH}/share/doc/db' --disable-rpath --enable-dbm || exit 1
+    make LIBSO_LIBS=-lpthread -j${MK_JOBS} || exit 1
+    make install || exit 1
+#fi
 
-patch -Np1 -i $PYTHON_PATCHES/1500-mingw-w64-dont-look-in-DLLs-folder-for-python-dll.patch
-patch -u configure.ac $PYTHON_PATCHES/0010-CROSS-warn-only-if-readelf-is-not-in-host-triplet-fo.patch
+# Install Python2
+if [ ! -f $INSTALL_PATH/lib/pkgconfig/python2.pc ]; then
 
-autoreconf -vfi
+    cd $MXE_INSTALL
+    make ncurses || exit 1
+    make libffi || exit 1
+
+    cd $TMP_PATH || exit 1
+    if [ ! -f $SRC_PATH/$PY2_TAR ]; then
+      wget $THIRD_PARTY_SRC_URL/$PY2_TAR -O $SRC_PATH/$PY2_TAR || exit 1
+    fi
+    tar xvf $SRC_PATH/$PY2_TAR || exit 1
+    cd Python-2* || exit 1
+    PYTHON_PATCHES=$CWD/include/patches/python2
+
+# these are created by patches
+    rm -f Misc/config_mingw Misc/cross_mingw32 Misc/python-config.sh.in Misc/cross_mingw32 Misc/python-config-u.sh.in Python/fileblocks.c
+
+    patch -Np1 -i "$PYTHON_PATCHES"/0000-make-_sysconfigdata.py-relocatable.patch
+
+    patch -p1 -i "$PYTHON_PATCHES"/0100-MINGW-BASE-use-NT-thread-model.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0110-MINGW-translate-gcc-internal-defines-to-python-platf.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0120-MINGW-use-header-in-lowercase.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0130-MINGW-configure-MACHDEP-and-platform-for-build.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0140-MINGW-preset-configure-defaults.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0150-MINGW-configure-largefile-support-for-windows-builds.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0160-MINGW-add-wincrypt.h-in-Python-random.c.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0180-MINGW-init-system-calls.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0190-MINGW-detect-REPARSE_DATA_BUFFER.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0200-MINGW-build-in-windows-modules-winreg.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0210-MINGW-determine-if-pwdmodule-should-be-used.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0220-MINGW-default-sys.path-calculations-for-windows-plat.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0230-MINGW-AC_LIBOBJ-replacement-of-fileblocks.patch
+
+    patch -p1 -i "$PYTHON_PATCHES"/0250-MINGW-compiler-customize-mingw-cygwin-compilers.patch
+
+
+    patch -p1 -i "$PYTHON_PATCHES"/0270-CYGWIN-issue13756-Python-make-fail-on-cygwin.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0290-issue6672-v2-Add-Mingw-recognition-to-pyport.h-to-al.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0300-MINGW-configure-for-shared-build.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0310-MINGW-dynamic-loading-support.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0320-MINGW-implement-exec-prefix.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0330-MINGW-ignore-main-program-for-frozen-scripts.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0340-MINGW-setup-exclude-termios-module.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0350-MINGW-setup-_multiprocessing-module.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0360-MINGW-setup-select-module.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0370-MINGW-setup-_ctypes-module-with-system-libffi.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0380-MINGW-defect-winsock2-and-setup-_socket-module.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0390-MINGW-exclude-unix-only-modules.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0400-MINGW-setup-msvcrt-module.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0410-MINGW-build-extensions-with-GCC.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0420-MINGW-use-Mingw32CCompiler-as-default-compiler-for-m.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0430-MINGW-find-import-library.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0440-MINGW-setup-_ssl-module.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0460-MINGW-generalization-of-posix-build-in-sysconfig.py.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0462-MINGW-support-stdcall-without-underscore.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0480-MINGW-generalization-of-posix-build-in-distutils-sys.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0490-MINGW-customize-site.patch
+
+    patch -p1 -i "$PYTHON_PATCHES"/0500-add-python-config-sh.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0510-cross-darwin-feature.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0520-py3k-mingw-ntthreads-vs-pthreads.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0530-mingw-system-libffi.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0540-mingw-semicolon-DELIM.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0550-mingw-regen-use-stddef_h.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0560-mingw-use-posix-getpath.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0565-mingw-add-ModuleFileName-dir-to-PATH.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0570-mingw-add-BUILDIN_WIN32_MODULEs-time-msvcrt.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0580-mingw32-test-REPARSE_DATA_BUFFER.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0590-mingw-INSTALL_SHARED-LDLIBRARY-LIBPL.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0600-msys-mingw-prefer-unix-sep-if-MSYSTEM.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0610-msys-cygwin-semi-native-build-sysconfig.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0620-mingw-sysconfig-like-posix.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0630-mingw-_winapi_as_builtin_for_Popen_in_cygwinccompiler.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0640-mingw-x86_64-size_t-format-specifier-pid_t.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0650-cross-dont-add-multiarch-paths-if-cross-compiling.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0660-mingw-use-backslashes-in-compileall-py.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0670-msys-convert_path-fix-and-root-hack.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0690-allow-static-tcltk.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0710-CROSS-properly-detect-WINDOW-_flags-for-different-nc.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0720-mingw-pdcurses_ISPAD.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0740-grammar-fixes.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0750-Add-interp-Python-DESTSHARED-to-PYTHONPATH-b4-pybuilddir-txt-dir.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0760-msys-monkeypatch-os-system-via-sh-exe.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0770-msys-replace-slashes-used-in-io-redirection.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0790-mingw-add-_exec_prefix-for-tcltk-dlls.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0800-mingw-install-layout-as-posix.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0820-mingw-reorder-bininstall-ln-symlink-creation.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0830-add-build-sysroot-config-option.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0840-add-builddir-to-library_dirs.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0850-cross-PYTHON_FOR_BUILD-gteq-276-and-fullpath-it.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0855-mingw-fix-ssl-dont-use-enum_certificates.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0860-mingw-build-optimized-ext.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0870-mingw-add-LIBPL-to-library-dirs.patch
+    patch -p1 -i "$PYTHON_PATCHES"/0910-fix-using-dllhandle-and-winver-mingw.patch
+
+    patch -p1 -i "$PYTHON_PATCHES"/1000-dont-link-with-gettext.patch
+    patch -p1 -i "$PYTHON_PATCHES"/1010-ctypes-python-dll.patch
+    patch -p1 -i "$PYTHON_PATCHES"/1020-gdbm-module-includes.patch
+    patch -p1 -i "$PYTHON_PATCHES"/1030-use-gnu_printf-in-format.patch
+    patch -p1 -i "$PYTHON_PATCHES"/1040-install-msilib.patch
+
+    patch -p1 -i "$PYTHON_PATCHES"/2000-distutils-add-windmc-to-cygwinccompiler.patch
+
+    autoreconf -vfi
 # Temporary workaround for FS#22322
 # See http://bugs.python.org/issue10835 for upstream report
 #sed -i "/progname =/s/python/python${_pybasever}/" Python/pythonrun.c
 
-touch Include/graminit.h
-touch Python/graminit.c
-touch Parser/Python.asdl
-touch Parser/asdl.py
-touch Parser/asdl_c.py
-touch Include/Python-ast.h
-touch Python/Python-ast.c
-echo \"\" > Parser/pgen.stamp
+# Enable built-in SQLite module to load extensions (fix FS#22122)
+    sed -i "/SQLITE_OMIT_LOAD_EXTENSION/d" setup.py
+
+# FS#23997
+    sed -i -e "s|^#.* /usr/local/bin/python|#!/usr/bin/env python2|" Lib/cgi.py
+
+    sed -i "s/python2.3/python2/g" Lib/distutils/tests/test_build_scripts.py \
+    Lib/distutils/tests/test_install_scripts.py Tools/scripts/gprof2html.py
+
+    touch Include/graminit.h
+    touch Python/graminit.c
+    touch Parser/Python.asdl
+    touch Parser/asdl.py
+    touch Parser/asdl_c.py
+    touch Include/Python-ast.h
+    touch Python/Python-ast.c
+    echo \"\" > Parser/pgen.stamp
 
 # Ensure that we are using the system copy of various libraries (expat, zlib and libffi),
 # rather than copies shipped in the tarball
-rm -rf Modules/expat
-rm -rf Modules/zlib
-rm -rf Modules/_ctypes/{darwin,libffi}*
+    rm -rf Modules/expat
+    rm -rf Modules/zlib
+    rm -rf Modules/_ctypes/{darwin,libffi}*
 
-  export ac_cv_working_tzset=no
-  rm -rf build
-  mkdir -p build
-  cd build
-  CFLAGS=$CFLAGS" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -DNDEBUG -I${INSTALL_PATH}/include" CXXFLAGS=$CXXLFLAGS" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -DNDEBUG -I${INSTALL_PATH}/include" LDFLAGS=$LDFLAGS" -s" ../configure --prefix=$INSTALL_PATH --build=x86_64-apple-darwin14.4.0  --host=$TARGET --enable-shared --with-system-expat --with-system-ffi --without-ensurepip --with-threads --disable-ipv6 CC=${CROSS_PREFIX}gcc CXX=${CROSS_PREFIX}g++ AR=${CROSS_PREFIX}ar RANLIB=${CROSS_PREFIX}ranlib STRIP=${CROSS_PREFIX}strip LD=${CROSS_PREFIX}ld AS=${TARGET}-as NM=${CROSS_PREFIX}nm DLLTOOL==${CROSS_PREFIX}dlltool OBJDUMP=${CROSS_PREFIX}objdump RESCOMP=${CROSS_PREFIX}windres CONFIG_SITE=python3/${TARGET}.config.site || exit 1
+# Workaround for conftest error on 64-bit builds
+    export ac_cv_working_tzset=no
+
+    export LIBFFI_INCLUDEDIR='${CROSS_PREFIX}pkg-config libffi --cflags-only-I | sed "s|\-I||g"'
+
+    rm -rf build
+    mkdir -p build
+    cd build
+
+    env CFLAGS=$CFLAGS" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -DNDEBUG -I${INSTALL_PATH}/include" CXXFLAGS=$CXXLFLAGS" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -DNDEBUG -I${INSTALL_PATH}/include" CPPFLAGS=$CPPFLAGS" -I${INSTALL_PATH}/include/ncurses" LDFLAGS=$LDFLAGS" -s -lws_32 -lgdbm" ../configure --prefix=$INSTALL_PATH --build=x86_64-apple-darwin14.4.0  --host=$TARGET --target=$TARGET --enable-shared --with-system-expat --with-system-ffi  --with-threads CC=${CROSS_PREFIX}gcc CXX=${CROSS_PREFIX}g++ AR=${CROSS_PREFIX}ar RANLIB=${CROSS_PREFIX}ranlib STRIP=${CROSS_PREFIX}strip LD=${CROSS_PREFIX}ld AS=${TARGET}-as NM=${CROSS_PREFIX}nm DLLTOOL==${CROSS_PREFIX}dlltool OBJDUMP=${CROSS_PREFIX}objdump RESCOMP=${CROSS_PREFIX}windres  || exit 1
     make -j${MKJOBS} || exit 1
     make install || exit 1
-    mkdir -p $INSTALL_PATH/docs/python3 || exit 1
-    cp LICENSE $INSTALL_PATH/docs/python3/ || exit 1
+    mkdir -p $INSTALL_PATH/docs/python2 || exit 1
+    cp LICENSE $INSTALL_PATH/docs/python2/ || exit 1
 fi
 
 # Setup env
 export PKG_CONFIG_PATH=$INSTALL_PATH/lib/pkgconfig
-export PATH=$MXE_INSTALL/usr/bin:$INSTALL_PATH/bin:$PATH
 export QTDIR=$INSTALL_PATH
 export BOOST_ROOT=$INSTALL_PATH
 export OPENJPEG_HOME=$INSTALL_PATH
 export THIRD_PARTY_TOOLS_HOME=$INSTALL_PATH
 export PYTHON_HOME=$INSTALL_PATH
-export PYTHON_PATH=$INSTALL_PATH/lib/python3.4
-export PYTHON_INCLUDE=$INSTALL_PATH/include/python3.4
+export PYTHON_PATH=$INSTALL_PATH/lib/python2.7
+export PYTHON_INCLUDE=$INSTALL_PATH/include/python2.7
+
 
 # Install boost
 if [ ! -f $INSTALL_PATH/lib/libboost_atomic-mt.a ]; then
@@ -306,10 +358,9 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/Magick++.pc ]; then
   fi
   tar xvf $SRC_PATH/$MAGICK_TAR || exit 1
   cd ImageMagick-* || exit 1
-  cat $INC_PATH/patches/composite-private.h > magick/composite-private.h || exit 1
-  patch -p0< $INC_PATH/patches/magick-seed.diff || exit 1
-  patch -p0< $INC_PATH/patches/magick-svg.diff || exit 1
-  CFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1" CXXFLAGS="$BF -DMAGICKCORE_EXCLUDE_DEPRECATED=1"  ./configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --with-magick-plus-plus=yes --with-quantum-depth=32 --without-dps --without-djvu --without-fftw --without-fpx --without-gslib --without-gvc --without-jbig --without-jpeg --without-lcms --with-lcms2 --without-openjp2 --without-lqr --without-lzma --without-openexr --with-pango --with-png --with-rsvg --without-tiff --without-webp --with-xml --without-zlib --without-bzlib --enable-static --disable-shared --enable-hdri --with-freetype --with-fontconfig --without-x --without-modules || exit 1
+  MAGICK_PATCH=$CWD/include/patches/ImageMagick
+  patch -p0< $MAGICK_PATCH/ImageMagick-6.8.10-1.diff || exit 1
+  env CFLAGS="-DMAGICKCORE_EXCLUDE_DEPRECATED=1" CXXFLAGS="-I${INSTALL_PATH}/include -DMAGICKCORE_EXCLUDE_DEPRECATED=1"  ./configure --prefix=$INSTALL_PATH --host=$TARGET --build=$BUILD_MACHINE --with-magick-plus-plus=yes --with-quantum-depth=32 --without-dps --without-djvu --without-fftw --without-fpx --without-gslib --without-gvc --without-jbig --without-jpeg --without-lcms --with-lcms2 --without-openjp2 --without-lqr --without-lzma --without-openexr --with-pango --with-png --with-rsvg --without-tiff --without-webp --with-xml --without-zlib --without-bzlib --enable-static --disable-shared --enable-hdri --with-freetype --with-fontconfig --without-x --without-modules --without-threads || exit 1
   make -j${MKJOBS} || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/imagemagick || exit 1
@@ -425,9 +476,7 @@ if [ ! -f $INSTALL_PATH/bin/qmake ]; then
   make qt
 fi
 
-# Force py3
-export PYTHON_PATH=$INSTALL_PATH/lib/python3.4
-export PYTHON_INCLUDE=$INSTALL_PATH/include/python3.4
+
 
 # Install shiboken
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/shiboken.pc ]; then
