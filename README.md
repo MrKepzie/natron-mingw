@@ -24,6 +24,10 @@ Create the local.sh file in the root of natron-mingw to specify various infos, e
     
 
 If this is the first time installing it, make sure to install all base packages by running:
-
-	sh include/scripts/setup-msys.sh
+	BIT=64
+	sh include/scripts/setup-msys.sh $BIT
+	sh include/scripts/build-sdk.sh $BIT
 	
+The environment is now ready to build Natron and plug-ins, just run:
+
+	sh 

@@ -32,7 +32,7 @@ fi
 
 
 echo
-echo "Building $SDK using with $MKJOBS threads ..."
+echo "Building $SDK using with $MKJOBS threads using gcc ${GCC_MAJOR}.${GCC_MINOR} ..."
 echo
 sleep 2
 
@@ -93,9 +93,9 @@ if [ ! -f $INSTALL_PATH/lib/libOpenColorIO.a ]; then
   tar xvf $SRC_PATH/$OCIO_TAR || exit 1
   cd OpenColorIO-* || exit 1
   OCIO_PATCHES=$CWD/include/patches/OpenColorIO
-  patch -u CMakeLists.txt ${OCIO_PATCHES}/mingw-w64.patch
-  patch -p1 -i ${OCIO_PATCHES}/fix-redefinitions.patch
-  patch -p1 -i ${OCIO_PATCHES}/detect-mingw-python.patch
+  patch -p1 -i ${OCIO_PATCHES}/mingw-w64.patch || exit 1
+  patch -p1 -i ${OCIO_PATCHES}/fix-redefinitions.patch || exit 1
+  patch -p1 -i ${OCIO_PATCHES}/detect-mingw-python.patch || exit 1
 
   mkdir build || exit 1
   cd build || exit 1
@@ -117,11 +117,11 @@ if [ ! -f $INSTALL_PATH/lib/libOpenImageIO.a ]; then
   fi
   tar xvf $SRC_PATH/$OIIO_TAR || exit 1
   cd oiio-Release-* || exit 1
-  OIIO_PATCHES=$CWD/include/OpenImageIO
-  patch -p1 -i ${OIIO_PATCHES}/fix-mingw-w64.patch
-  patch -p1 -i ${OIIO_PATCHES}/workaround-ansidecl-h-PTR-define-conflict.patch
-  patch -p1 -i ${OIIO_PATCHES}/0001-MinGW-w64-include-winbase-h-early-for-TCHAR-types.patch
-  patch -p1 -i ${OIIO_PATCHES}/0002-Also-link-to-opencv_videoio-library.patch
+  OIIO_PATCHES=$CWD/include/patches/OpenImageIO
+  patch -p1 -i ${OIIO_PATCHES}/fix-mingw-w64.patch  || exit 1
+  patch -p1 -i ${OIIO_PATCHES}/workaround-ansidecl-h-PTR-define-conflict.patch || exit 1
+  patch -p1 -i ${OIIO_PATCHES}/0001-MinGW-w64-include-winbase-h-early-for-TCHAR-types.patch  || exit 1
+  patch -p1 -i ${OIIO_PATCHES}/0002-Also-link-to-opencv_videoio-library.patch  || exit 1
 
   mkdir build || exit 1
   cd build || exit 1
