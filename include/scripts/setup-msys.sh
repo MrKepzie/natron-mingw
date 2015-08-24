@@ -12,8 +12,8 @@ fi
 #Update database
 pacman --noconfirm  -Syu
 
-PKG_INSTALL_OPS=--noconfirm -S
 pacman $PKG_INSTALL_OPS unzip
+PKG_INSTALL_OPS="--noconfirm -S"
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}toolchain
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}yasm
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}gdbm
@@ -37,3 +37,7 @@ pacman $PKG_INSTALL_OPS ${PKG_PREFIX}openssl
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}freetype
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}fontconfig
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}eigen3
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}pango
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}librsvg
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}cmake
+pacman $PKG_INSTALL_OPS wget tar diffutils file gawk gettext grep make patch patchutils pkg-config sed
