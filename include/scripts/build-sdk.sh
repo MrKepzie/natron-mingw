@@ -155,22 +155,22 @@ fi
 
 # Install ffmpeg
 # Todo: do a full build of ffmpeg with all dependencies (LGPL only)
-if [ "$REBUILD_FFMPEG" == "1" ]; then
-  rm -rf $INSTALL_PATH/bin/ff* $INSTALL_PATH/lib/libav* $INSTALL_PATH/lib/libsw* $INSTALL_PATH/include/libav* $INSTALL_PATH/lib/pkgconfig/libav*
-fi
-if [ ! -f $INSTALL_PATH/lib/pkgconfig/libavcodec.pc ]; then
-  cd $TMP_PATH || exit 1
-  if [ ! -f $SRC_PATH/$FFMPEG_TAR ]; then
-    wget $THIRD_PARTY_SRC_URL/$FFMPEG_TAR -O $SRC_PATH/$FFMPEG_TAR || exit 1
-  fi
-  tar xvf $SRC_PATH/$FFMPEG_TAR || exit 1
-  cd ffmpeg-2* || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --disable-static || exit 1
-  make -j${MKJOBS} || exit 1
-  make install || exit 1
-  mkdir -p $INSTALL_PATH/docs/ffmpeg || exit 1
-  cp COPYING.LGPLv2.1 CREDITS $INSTALL_PATH/docs/ffmpeg/
-fi
+#if [ "$REBUILD_FFMPEG" == "1" ]; then
+#  rm -rf $INSTALL_PATH/bin/ff* $INSTALL_PATH/lib/libav* $INSTALL_PATH/lib/libsw* $INSTALL_PATH/include/libav* $INSTALL_PATH/lib/pkgconfig/libav*
+#fi
+#if [ ! -f $INSTALL_PATH/lib/pkgconfig/libavcodec.pc ]; then
+#  cd $TMP_PATH || exit 1
+#  if [ ! -f $SRC_PATH/$FFMPEG_TAR ]; then
+#    wget $THIRD_PARTY_SRC_URL/$FFMPEG_TAR -O $SRC_PATH/$FFMPEG_TAR || exit 1
+#  fi
+#  tar xvf $SRC_PATH/$FFMPEG_TAR || exit 1
+#  cd ffmpeg-2* || exit 1
+#  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure --prefix=$INSTALL_PATH --libdir=$INSTALL_PATH/lib --enable-shared --disable-static || exit 1
+#  make -j${MKJOBS} || exit 1
+#  make install || exit 1
+#  mkdir -p $INSTALL_PATH/docs/ffmpeg || exit 1
+#  cp COPYING.LGPLv2.1 CREDITS $INSTALL_PATH/docs/ffmpeg/
+#fi
 
 # Install shiboken
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/shiboken-py2.pc ]; then
@@ -191,7 +191,7 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/pyside-py2.pc ]; then
 fi
 
 # Install SeExpr
-if [ ! -f $INSTALL_PATH/lib/libSeExpr.so ]; then
+if [ ! -f $INSTALL_PATH/lib/libSeExpr.a ]; then
   cd $TMP_PATH || exit 1
   if [ ! -f $SRC_PATH/$SEE_TAR ]; then
     wget $THIRD_PARTY_SRC_URL/$SEE_TAR -O $SRC_PATH/$SEE_TAR || exit 1
@@ -200,7 +200,7 @@ if [ ! -f $INSTALL_PATH/lib/libSeExpr.so ]; then
   cd SeExpr-* || exit 1
   mkdir build || exit 1
   cd build || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
+  CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -G"MSYS Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
   make || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/seexpr || exit 1
@@ -210,15 +210,7 @@ fi
 # Install static qt4 for installer
 if [ ! -f $INSTALL_PATH/qt4-static/bin/qmake ]; then
   cd $TMP_PATH || exit 1
-  QTIFW_CONF="-no-multimedia -no-gif -qt-libpng -no-opengl -no-libmng -no-libtiff -no-libjpeg -static -no-openssl -confirm-license -release -opensource -nomake demos -nomake docs -nomake examples -no-gtkstyle -no-webkit -I${INSTALL_PATH}/include -L${INSTALL_PATH}/lib"
-
-  tar xvf $SRC_PATH/$QT4_TAR || exit 1
-  cd qt*4.8* || exit 1
-  CFLAGS="$BF" CXXFLAGS="$BF" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" ./configure -prefix $INSTALL_PATH/qt4-static $QTIFW_CONF || exit 1
-
-  # https://bugreports.qt-project.org/browse/QTBUG-5385
-  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/lib make -j${MKJOBS} || exit 1
-  make install || exit 1
+  #Todo: Download from Third_Party_Binaries pre-built static binaries of Qt4
 fi
 
 # Install setup tools
