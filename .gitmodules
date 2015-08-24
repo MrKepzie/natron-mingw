@@ -1,0 +1,3 @@
+[submodule "MINGW-packages"]
+	path = MINGW-packages
+	url = https://github.com/MrKepzie/MINGW-packages.git

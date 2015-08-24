@@ -41,8 +41,10 @@ COLOR_PROFILES_VERSION=2.0
 #
 
 SDK_VERSION=2.0
-PKG_PREFIX32=mingw-w64-i686-
-PKG_PREFIX64=mingw-w64-x86_64-
+MINGW_PACKAGES_PATH=($CWD)/MINGW-packages
+MINGW_PREFIX=mingw-w64-
+PKG_PREFIX32=${MINGW_PREFIX}i686-
+PKG_PREFIX64=${MINGW_PREFIX}x86_64-
 INSTALL32_PATH=/mingw32
 INSTALL64_PATH=/mingw64
 
@@ -95,8 +97,6 @@ CV_TAR=opencv-2.4.11.zip
 EIGEN_TAR=eigen-eigen-bdd17ee3b1b3.tar.gz
 YASM_TAR=yasm-1.3.0.tar.gz
 CMAKE_TAR=cmake-3.1.2.tar.gz
-GDBM_TAR=gdbm-1.11.tar.gz
-DB_TAR=db-6.1.26.tar.gz
 PY3_TAR=Python-3.4.3.tar.xz
 PY2_TAR=Python-2.7.10.tar.xz
 JPG_TAR=jpegsrc.v9a.tar.gz
@@ -119,19 +119,22 @@ SEE_TAR=SeExpr-rel-1.0.1.tar.gz
 LIBRAW_TAR=LibRaw-0.16.0.tar.gz
 PIX_TAR=pixman-0.32.6.tar.gz
 LCMS_TAR=lcms2-2.6.tar.gz
-MAGICK_TAR=ImageMagick-6.8.9-10.tar.gz
+MAGICK_TAR=openfx-ImageMagick-6.8.10-1.tar.gz
 GIF_TAR=giflib-5.1.1.tar.gz
 #SSL_TAR=openssl-1.0.0r.tar.gz 
 JASP_TAR=jasper-1.900.1.zip
 NATRON_API_DOC=https://media.readthedocs.org/pdf/natron/workshop/natron.pdf # TODO generate own
 
-# Arch
-#
-# Default build flags
-
-BF32="-O2 -march=i686 -mtune=i686"
-BF64="-O2 -fPIC"
-
+GCC_V=$(gcc --version | awk '{print $0;exit 0;}' | awk '{print $7}' | sed 's#\.# #g')
+GCC_MAJOR=$(echo $GCC_V | awk '{print $1}')
+GCC_MINOR=$(echo $GCC_V | awk '{print $2}')
+if [ "$GCC_MAJOR" -lt "4" ]; then
+  echo "Wrong GCC version. Must be at least 4.8"
+  exit 1
+elif [ "$GCC_MAJOR" -eq "4" ] && [ "$GCC_MINOR" -lt "8" ]; then
+  echo "Wrong GCC version. Must be at least 4.8"
+  exit 1
+fi
 
 # Threads
 #

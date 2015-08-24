@@ -14,6 +14,7 @@ pacman --noconfirm  -Syu
 
 PKG_INSTALL_OPS=--noconfirm -S
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}toolchain
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}yasm
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}gdbm
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}db
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}python2
@@ -32,3 +33,6 @@ pacman $PKG_INSTALL_OPS ${PKG_PREFIX}glew
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}pixman
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}cairo
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}openssl
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}freetype
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}fontconfig
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}eigen3
