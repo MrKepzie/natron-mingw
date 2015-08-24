@@ -134,8 +134,23 @@ fi
 
 # Install opencv
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/opencv.pc ]; then
-  cd $MXE_INSTALL
-  make opencv
+  cd $TMP_PATH || exit 1
+  if [ ! -f $CWD/src/$CV_TAR ]; then
+    wget $THIRD_PARTY_SRC_URL/$CV_TAR -O $CWD/src/$CV_TAR || exit 1
+  fi
+  unzip $CWD/src/$CV_TAR || exit 1
+  CV_PATCHES=$CWD/include/patches/OpenCV
+  cd opencv* || exit 1
+  patch -p0 -i "${CV_PATCHES}/mingw-w64-cmake.patch" || exit 1
+  patch -Np1 -i "${CV_PATCHES}/free-tls-keys-on-dll-unload.patch" || exit 1
+  patch -Np1 -i "${CV_PATCHES}/solve_deg3-underflow.patch" || exit 1
+  mkdir build || exit 1
+  cd build || exit 1
+  CMAKE_INCLUDE_PATH="$INSTALL_PATH/include $(pwd)" CMAKE_LIBRARY_PATH=$INSTALL_PATH/lib CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake -G"MSYS Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DWITH_GTK=OFF -DWITH_GSTREAMER=OFF -DWITH_FFMPEG=OFF -DWITH_OPENEXR=OFF -DWITH_OPENCL=OFF -DWITH_OPENGL=ON -DBUILD_WITH_DEBUG_INFO=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_SSE3=OFF ..  || exit 1
+  make -j${MKJOBS} || exit 1
+  make install || exit 1
+  mkdir -p $INSTALL_PATH/docs/opencv || exit 1
+  cp ../LIC* ../COP* ../README ../AUTH* ../CONT* $INSTALL_PATH/docs/opencv/
 fi
 
 # Install ffmpeg

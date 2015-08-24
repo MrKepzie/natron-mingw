@@ -13,6 +13,7 @@ fi
 pacman --noconfirm  -Syu
 
 PKG_INSTALL_OPS=--noconfirm -S
+pacman $PKG_INSTALL_OPS unzip
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}toolchain
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}yasm
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}gdbm
