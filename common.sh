@@ -40,28 +40,11 @@ COLOR_PROFILES_VERSION=2.0
 # SDK
 #
 
-if [ -z "$MXE_INSTALL" ]; then
-    git submodule update -i --recursive
-    MXE_INSTALL=$CWD/mxe
-fi
-
-if [ -f $MXE_INSTALL/settings.mk ]; then
-    echo 'JOBS := 8' > $MXE_INSTALL/settings.mk
-    echo 'MXE_TARGETS := x86_64-w64-mingw32.static i686-w64-mingw32.static' > $MXE_INSTALL/settings.mk
-#LOCAL_PKG_LIST := winpthreads pcre zlib lzo bzip2 cunit
-#.DEFAULT local-pkg-list:
-#local-pkg-list: $(LOCAL_PKG_LIST)
-
-fi
-
 SDK_VERSION=2.0
-TARGET32=i686-w64-mingw32.static
-TARGET64=x86_64-w64-mingw32.static
-INSTALL32_PATH=$MXE_INSTALL/usr/$TARGET32
-INSTALL64_PATH=$MXE_INSTALL/usr/$TARGET64
-CROSS_PREFIX32=$MXE_INSTALL/usr/bin/${TARGET32}-
-CROSS_PREFIX64=$MXE_INSTALL/usr/bin/${TARGET64}-
-BUILD_MACHINE=$MXE_INSTALL/ext/config.guess
+PKG_PREFIX32=mingw-w64-i686-
+PKG_PREFIX64=mingw-w64-x86_64-
+INSTALL32_PATH=/mingw32
+INSTALL64_PATH=/mingw64
 
 # Common values
 #
