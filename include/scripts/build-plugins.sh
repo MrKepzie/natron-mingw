@@ -5,6 +5,21 @@
 
 source $(pwd)/common.sh || exit 1
 
+
+if [ "$1" == "32" ]; then
+  INSTALL_PATH=$INSTALL32_PATH
+  PKG_PREFIX=$PKG_PREFIX32
+  BIT=32
+elif [ "$1" == "64" ]; then
+  INSTALL_PATH=$INSTALL64_PATH
+  PKG_PREFIX=$PKG_PREFIX64
+  BIT=64
+else
+    echo "BIT=?"
+    exit 1
+fi
+
+
 PID=$$
 if [ -f $TMP_DIR/natron-build-plugins.pid ]; then
   OLDPID=$(cat $TMP_DIR/natron-build-plugins.pid)
@@ -24,14 +39,6 @@ MISC_BRANCH=master
 ARENA_BRANCH=master
 CV_BRANCH=master
 
-if [ "$1" == "32" ]; then
-	BIT=32
-	INSTALL_PATH=$INSTALL32_PATH
-else
-	BIT=64
-	INSTALL_PATH=$INSTALL64_PATH
-fi
-
 if [ "$2" != "workshop" ]; then
   IO_BRANCH=$IOPLUG_GIT_TAG
   MISC_BRANCH=$MISCPLUG_GIT_TAG
@@ -39,15 +46,6 @@ if [ "$2" != "workshop" ]; then
   CV_V=$CVPLUG_GIT_TAG
 fi
 
-if [ ! -d $INSTALL_PATH ]; then
-  if [ -f $SRC_PATH/Natron-$SDK_VERSION-Windows-$OS-$BIT-SDK.tar.xz ]; then
-    echo "Found binary SDK, extracting ..."
-    tar xvJf $SRC_PATH/Natron-$SDK_VERSION-Windows-$OS-$BIT-SDK.tar.xz -C $SDK_PATH/ || exit 1
-  else
-    echo "Need to build SDK ..."
-    MKJOBS=$MKJOBS TAR_SDK=1 sh $INC_PATH/scripts/build-sdk.sh $BIT || exit 1
-  fi
-fi
 
 if [ -d $TMP_PATH ]; then
   rm -rf $TMP_PATH || exit 1
@@ -60,6 +58,8 @@ export QTDIR=$INSTALL_PATH
 export BOOST_ROOT=$INSTALL_PATH
 export OPENJPEG_HOME=$INSTALL_PATH
 export THIRD_PARTY_TOOLS_HOME=$INSTALL_PATH
+
+export GIT_SSL_NO_VERIFY=true
 
 if [ -d $INSTALL_PATH/Plugins ]; then
   rm -rf $INSTALL_PATH/Plugins || exit 1
@@ -107,6 +107,7 @@ MISC_V=$MISC_GIT_VERSION
 sed -i "s/MISCPLUG_DEVEL_GIT=.*/MISCPLUG_DEVEL_GIT=${MISC_V}/" $CWD/commits-hash.sh || exit 1
 
 env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make CONFIG=release BITS=$BIT || exit 1
+
 cp -a */Linux-$BIT-release/*.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
 mkdir -p $INSTALL_PATH/docs/openfx-misc || exit 1
@@ -143,6 +144,7 @@ sed -i "s/IOPLUG_DEVEL_GIT=.*/IOPLUG_DEVEL_GIT=${IO_V}/" $CWD/commits-hash.sh ||
 
 
 env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make CONFIG=release BITS=$BIT || exit 1
+
 cp -a IO/Linux-$BIT-release/IO.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
 mkdir -p $INSTALL_PATH/docs/openfx-io || exit 1
@@ -178,8 +180,9 @@ ARENA_V=$ARENA_GIT_VERSION
 sed -i "s/ARENAPLUG_DEVEL_GIT=.*/ARENAPLUG_DEVEL_GIT=${ARENA_V}/" $CWD/commits-hash.sh || exit 1
 
 
-env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make USE_SVG=1 USE_PANGO=1 STATIC=1 CONFIG=release BITS=$BIT || exit 1
-cp -a Bundle/Linux-$BIT-release/Arena.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
+env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make MINGW=1 USE_SVG=1 USE_PANGO=1 STATIC=1 CONFIG=release BITS=$BIT || exit 1
+cp -a Bundle/*-release/Arena.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
+
 
 mkdir -p $INSTALL_PATH/docs/openfx-arena || exit 1
 cp LICENSE README.md $INSTALL_PATH/docs/openfx-arena/ || exit 1
@@ -216,6 +219,7 @@ sed -i "s/CVPLUG_DEVEL_GIT=.*/CVPLUG_DEVEL_GIT=${CV_V}/" $CWD/commits-hash.sh ||
 
 cd opencv2fx || exit 1
 env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make CONFIG=release BITS=$BIT || exit 1
+
 cp -a */Linux-$BIT-release/*.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
 mkdir -p $INSTALL_PATH/docs/openfx-opencv || exit 1
