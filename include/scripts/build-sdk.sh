@@ -113,7 +113,7 @@ fi
 if [ "$REBUILD_OIIO" == "1" ]; then
   rm -rf $INSTALL_PATH/lib/libOpenImage* $INSTALL_PATH/include/OpenImage* $INSTALL_PATH/bin/OpenImage*
 fi
-if [ ! -f $INSTALL_PATH/lib/libOpenImageIO.a ]; then
+if [ ! -f $INSTALL_PATH/bin/libOpenImageIO.dll ]; then
   cd $TMP_PATH || exit 1
   if [ ! -f $SRC_PATH/$OIIO_TAR ]; then
     wget $THIRD_PARTY_SRC_URL/$OIIO_TAR -O $SRC_PATH/$OIIO_TAR || exit 1
@@ -182,6 +182,9 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/pyside-py2.pc ]; then
 fi
 
 # Install SeExpr
+if [ "$REBUILD_SEEXPR" == "1" ]; then
+  rm -rf $INSTALL_PATH/lib/libSeExpr* $INSTALL_PATH/include/SeExpr*
+fi
 if [ ! -f $INSTALL_PATH/lib/libSeExpr.a ]; then
   cd $TMP_PATH || exit 1
   if [ ! -f $SRC_PATH/$SEE_TAR ]; then
@@ -191,7 +194,7 @@ if [ ! -f $INSTALL_PATH/lib/libSeExpr.a ]; then
   cd SeExpr-* || exit 1
   mkdir build || exit 1
   cd build || exit 1
-  CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -G"MSYS Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
+  env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake .. -G"MSYS Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH || exit 1
   make || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/seexpr || exit 1
