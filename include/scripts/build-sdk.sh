@@ -85,6 +85,9 @@ fi
 
 
 # Install ocio
+if [ "$REBUILD_OCIO" == "1" ]; then
+  rm -rf $INSTALL_PATH/lib/libOpenColorIO* rm -rf $INSTALL_PATH/share/ocio* $INSTALL_PATH/include/OpenColorIO*
+fi
 if [ ! -f $INSTALL_PATH/lib/libOpenColorIO.a ]; then
   cd $TMP_PATH || exit 1
   if [ ! -f $SRC_PATH/$OCIO_TAR ]; then
@@ -108,7 +111,7 @@ fi
 
 # Install oiio
 if [ "$REBUILD_OIIO" == "1" ]; then
-  rm -rf $INSTALL_PATH/lib/libOpenImage* $INSTALL_PATH/include/OpenImage*
+  rm -rf $INSTALL_PATH/lib/libOpenImage* $INSTALL_PATH/include/OpenImage* $INSTALL_PATH/bin/OpenImage*
 fi
 if [ ! -f $INSTALL_PATH/lib/libOpenImageIO.a ]; then
   cd $TMP_PATH || exit 1
