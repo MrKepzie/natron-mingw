@@ -19,15 +19,21 @@ Create the local.sh file in the root of natron-mingw to specify various infos, e
 
     #!/bin/sh
 
-    REPO_DEST=mrkepzie@vps163799.ovh.net:../www/downloads.natron.fr
-    REPO_URL=http://downloads.natron.fr
+    REPO_DEST=user@host:/path
+    REPO_URL=http://some.url
     
 
 If this is the first time installing it, make sure to install all base packages by running:
+	
+	#Use BIT=32 or BIT=64
 	BIT=64
 	sh include/scripts/setup-msys.sh $BIT
 	sh include/scripts/build-sdk.sh $BIT
 	
 The environment is now ready to build Natron and plug-ins, just run:
+	
+	#Use BIT=32 or BIT=64
+	BIT=64
+	sh snapshots.sh 64
 
-	sh 
+	

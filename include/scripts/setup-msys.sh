@@ -15,6 +15,7 @@ pacman --noconfirm  -Syu
 PKG_INSTALL_OPS="--noconfirm -S"
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}toolchain
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}yasm
+pacman $PKG_INSTALL_OPS ${PKG_PREFIX}gsm
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}gdbm
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}db
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}python2
