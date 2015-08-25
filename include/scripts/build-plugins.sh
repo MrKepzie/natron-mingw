@@ -143,7 +143,7 @@ IO_V=$IO_GIT_VERSION
 sed -i "s/IOPLUG_DEVEL_GIT=.*/IOPLUG_DEVEL_GIT=${IO_V}/" $CWD/commits-hash.sh || exit 1
 
 
-env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make MINGW=1 CONFIG=release BITS=$BIT || exit 1
+env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make CONFIG=release BITS=$BIT || exit 1
 
 cp -a IO/MINGW${BIT}_NT-6.1-64-release/IO.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
