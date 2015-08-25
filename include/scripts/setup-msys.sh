@@ -39,4 +39,4 @@ pacman $PKG_INSTALL_OPS ${PKG_PREFIX}eigen3
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}pango
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}librsvg
 pacman $PKG_INSTALL_OPS ${PKG_PREFIX}cmake
-pacman $PKG_INSTALL_OPS wget tar diffutils file gawk gettext grep make patch patchutils pkg-config sed unzip
+pacman $PKG_INSTALL_OPS wget tar diffutils file gawk gettext grep make patch patchutils pkg-config sed unzip git
