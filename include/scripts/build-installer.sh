@@ -56,6 +56,7 @@ cat $INC_PATH/config/config.xml | sed "s/_VERSION_/${NATRON_VERSION_NUMBER}/;s#_
 cp $INC_PATH/config/*.png $INSTALLER/config/ || exit 1
 
 # OFX IO
+IO_DLL="LIBFFI-6.DLL LIBICUDT55.DLL LIBIDN-11.DLL LIBP11-KIT-0.DLL LIBTASN1-6.DLL LIBGMP-10.DLL LIBGNUTLS-30.DLL LIBHOGWEED-4-1.DLL LIBNETTLE-6-1.DLL LIBICUUC55.DLL LIBLCMS2-2.DLL LIBJASPER-1.DLL AVCODEC-56.DLL LIBGSM.DLL LIBLZMA-5.DLL LIBMP3LAME-0.DLL LIBOPENJPEG-5.DLL LIBOPUS-0.DLL LIBSCHROEDINGER-1.0-0.DLL LIBSPEEX-1.DLL LIBTHEORADEC-1.DLL LIBTHEORAENC-1.DLL LIBVORBIS-0.DLL LIBVORBISENC-2.DLL LIBVPX-1.DLL LIBWAVPACK-1.DLL SWRESAMPLE-1.DLL LIBORC-0.4-0.DLL LIBOGG-0.DLL LIBMODPLUG-1.DLL LIBRTMP-1.DLL AVFORMAT-56.DLL AVUTIL-54.DLL LIBHALF-2_2.DLL LIBILMIMF-2_2.DLL LIBIEX-2_2.DLL LIBILMTHREAD-2_2.DLL LIBIMATH-2_2.DLL LIBILMIMF-2_2.DLL LIBOPENIMAGEIO.DLL LIBGIF-7.DLL LIBJPEG-8.DLL LIBRAW_R-10.DLL LIBTIFF-5.DLL LIBWEBP-5.DLL LIBBOOST_THREAD-MT.DLL LIBBOOST_SYSTEM-MT.DLL LIBBOOST_REGEX-MT.DLL LIBBOOST_FILESYSTEM-MT.DLL SWSCALE-3.DLL"
 OFX_IO_VERSION=$TAG
 OFX_IO_PATH=$INSTALLER/packages/$IOPLUG_PKG
 mkdir -p $OFX_IO_PATH/data $OFX_IO_PATH/meta $OFX_IO_PATH/data/Plugins || exit 1
@@ -65,131 +66,11 @@ cat $INSTALL_PATH/docs/openfx-io/VERSION > $OFX_IO_PATH/meta/ofx-io-license.txt 
 echo "" >> $OFX_IO_PATH/meta/ofx-io-license.txt || exit 1
 cat $INSTALL_PATH/docs/openfx-io/LICENSE >> $OFX_IO_PATH/meta/ofx-io-license.txt || exit 1
 cp -a $INSTALL_PATH/Plugins/IO.ofx.bundle $OFX_IO_PATH/data/Plugins/ || exit 1
-strip -s $OFX_IO_PATH/data/Plugins/*/*/*/*
-IO_LIBS=$OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Libraries
-mkdir -p $IO_LIBS || exit 1
-
-OFX_DEPENDS=$(ldd $INSTALLER/packages/*/data/Plugins/*/*/*/*|grep opt | awk '{print $3}')
-for x in $OFX_DEPENDS; do
-  cp -v $x $IO_LIBS/ || exit 1
+for depend in $IO_DLL; do
+  cp $INSTALL_PATH/bin/$depend $OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT/ || exit 1
 done
-
-IO_LIC=$OFX_IO_PATH/meta/ofx-io-license.txt
-echo "" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-echo "BOOST:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/boost/LICENSE_1_0.txt >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "FFMPEG:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/ffmpeg/COPYING.LGPLv2.1 >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "JPEG:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/jpeg/README  >>$IO_LIC  || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "OPENCOLORIO:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/ocio/LICENSE >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "OPENIMAGEIO:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/oiio/LICENSE >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "OPENEXR:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/openexr/LICENSE >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "OPENJPEG:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/openjpeg/LICENSE >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "PNG:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/png/LICENSE >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "TIFF:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/tiff/COPYRIGHT >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "SEEXPR:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/seexpr/license.txt >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "LIBRAW:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/libraw/COPYRIGHT >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "JASPER:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/jasper/COPYRIGHT >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "LCMS:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/lcms/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "DIRAC:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/dirac/COPYING.MPL >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "LAME:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/lame/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "MODPLUG:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/libmodplug/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "OGG:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/libogg/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "THEORA:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/libtheora/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "VORBIS:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/libvorbis/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "VPX:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/libvpx/LICENSE >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "OPUS:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/opus/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "ORC:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/orc/COPYING >>$IO_LIC || exit 1
-
-echo "" >>$IO_LIC || exit 1
-echo "SPEEX:" >>$IO_LIC || exit 1
-echo "" >>$IO_LIC || exit 1
-cat $INSTALL_PATH/docs/speex/COPYING >>$IO_LIC || exit 1
+cp $INSTALL_PATH/lib/{LIBOPENCOLORIO.DLL,LIBSEEXPR.DLL} $OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT/ || exit 1
+strip -s $OFX_IO_PATH/data/Plugins/*/*/*/*
 
 # OFX MISC
 OFX_MISC_VERSION=$TAG
@@ -211,13 +92,12 @@ cat $QS/natron.qs > $NATRON_PATH/meta/installscript.qs || exit 1
 cp -a $INSTALL_PATH/docs/natron/* $NATRON_PATH/data/docs/ || exit 1
 cat $INSTALL_PATH/docs/natron/LICENSE.txt > $NATRON_PATH/meta/natron-license.txt || exit 1
 cp $INSTALL_PATH/bin/Natron* $NATRON_PATH/data/bin/ || exit 1
-strip -s $NATRON_PATH/data/bin/Natron $NATRON_PATH/data/bin/NatronRenderer $NATRON_PATH/data/bin/NatronCrashReporter
-wget $NATRON_API_DOC || exit 1
+strip -s $NATRON_PATH/data/bin/Natron*
+wget --no-check-certificate $NATRON_API_DOC || exit 1
 mv natron.pdf $NATRON_PATH/data/docs/Natron_Python_API_Reference.pdf || exit 1
 rm $NATRON_PATH/data/docs/TuttleOFX-README.txt || exit 1
-cat $INC_PATH/scripts/Natron.sh > $NATRON_PATH/data/Natron || exit 1
-cat $INC_PATH/scripts/Natron.sh | sed "s#bin/Natron#bin/NatronRenderer#" > $NATRON_PATH/data/NatronRenderer || exit 1
-chmod +x $NATRON_PATH/data/Natron $NATRON_PATH/data/NatronRenderer || exit 1
+strip -s $NATRON_PATH/data/bin/*
+
 
 # OCIO
 OCIO_VERSION=$COLOR_PROFILES_VERSION
@@ -233,47 +113,23 @@ CLIBS_PATH=$INSTALLER/packages/$CORELIBS_PKG
 mkdir -p $CLIBS_PATH/meta $CLIBS_PATH/data/bin $CLIBS_PATH/data/lib $CLIBS_PATH/data/share/pixmaps || exit 1
 cat $XML/corelibs.xml | sed "s/_VERSION_/${CLIBS_VERSION}/;s/_DATE_/${DATE}/" > $CLIBS_PATH/meta/package.xml || exit 1
 cat $QS/corelibs.qs > $CLIBS_PATH/meta/installscript.qs || exit 1
-cp $INSTALL_PATH/lib/libQtDBus.so.4 $CLIBS_PATH/data/lib/ || exit 1
-cp $INSTALL_PATH/share/pixmaps/natronIcon256_linux.png $CLIBS_PATH/data/share/pixmaps/ || exit 1
 
-cp -a $INSTALL_PATH/plugins/imageformats $CLIBS_PATH/data/bin/ || exit 1
-CORE_DEPENDS=$(ldd $NATRON_PATH/data/bin/*|grep opt | awk '{print $3}')
-for i in $CORE_DEPENDS; do
-  cp -v $i $CLIBS_PATH/data/lib/ || exit 1
+cp -a $INSTALL_PATH/share/qt4/plugins/imageformats $CLIBS_PATH/data/bin/ || exit 1
+rm -f $CLIBS_PATH/data/bin/imageformats/*d4.dll
+NATRON_DLL="LIBICONV-2.DLL LIBINTL-8.DLL GLEW32.DLL LIBGLIB-2.0-0.DLL LIBWINPTHREAD-1.DLL LIBGCC_S_SEH-1.DLL LIBSTDC++-6.DLL LIBBOOST_SERIALIZATION-MT.DLL LIBCAIRO-2.DLL LIBFREETYPE-6.DLL LIBBZ2-1.DLL LIBHARFBUZZ-0.DLL LIBPIXMAN-1-0.DLL LIBPNG16-16.DLL ZLIB1.DLL LIBEXPAT-1.DLL LIBFONTCONFIG-1.DLL LIBPYSIDE-PYTHON2.7.DLL LIBPYTHON2.7.DLL QTCORE4.DLL QTGUI4.DLL QTNETWORK4.DLL QTOPENGL4.DLL LIBSHIBOKEN-PYTHON2.7.DLL"
+for depend in $NATRON_DLL; do
+  cp $INSTALL_PATH/bin/$depend $CLIBS_PATH/data/bin/ || exit 1
 done
-LIB_DEPENDS=$(ldd $CLIBS_PATH/data/lib/*|grep opt | awk '{print $3}')
-for y in $LIB_DEPENDS; do
-  cp -v $y $CLIBS_PATH/data/lib/ || exit 1
-done
-PLUG_DEPENDS=$(ldd $CLIBS_PATH/data/bin/*/*|grep opt | awk '{print $3}')
-for z in $PLUG_DEPENDS; do
-  cp -v $z $CLIBS_PATH/data/lib/ || exit 1
-done
-if [ -f $INC_PATH/misc/compat${BIT}.tgz ]; then
-  tar xvf $INC_PATH/misc/compat${BIT}.tgz -C $CLIBS_PATH/data/lib/ || exit 1
-fi
+
+
 
 # TODO: At this point send unstripped binaries (and debug binaries?) to Socorro server for breakpad
 
-strip -s $CLIBS_PATH/data/lib/*
+strip -s $CLIBS_PATH/data/bin/*
 strip -s $CLIBS_PATH/data/bin/*/*
 
 CORE_DOC=$CLIBS_PATH
-cat $INSTALL_PATH/docs/boost/LICENSE_1_0.txt >> $CORE_DOC/meta/3rdparty-license.txt 
-cat $INSTALL_PATH/docs/cairo/COPYING-MPL-1.1 >> $CORE_DOC/meta/3rdparty-license.txt
-cat $INSTALL_PATH/docs/glew/LICENSE.txt >> $CORE_DOC/meta/3rdparty-license.txt
-cat $INSTALL_PATH/docs/jpeg/README >> $CORE_DOC/meta/3rdparty-license.txt
-cat $INSTALL_PATH/docs/png/LICENSE >> $CORE_DOC/meta/3rdparty-license.txt
-cat $INSTALL_PATH/docs/qt/*LGPL* >> $CORE_DOC/meta/3rdparty-license.txt
-cat $INSTALL_PATH/docs/tiff/COPYRIGHT >> $CORE_DOC/meta/3rdparty-license.txt
-
-if [ "$PYV" == "3" ]; then
-  cat $INSTALL_PATH/docs/python3/LICENSE >> $CORE_DOC/meta/3rdparty-license.txt || exit 1
-else
-  cat $INSTALL_PATH/docs/python2/LICENSE >> $CORE_DOC/meta/3rdparty-license.txt || exit 1
-fi
-cat $INSTALL_PATH/docs/pyside/* >> $CORE_DOC/meta/3rdparty-license.txt
-cat $INSTALL_PATH/docs/shibroken/* >> $CORE_DOC/meta/3rdparty-license.txt 
+echo "" >> $CORE_DOC/meta/3rdparty-license.txt 
 
 #Copy Python distrib
 mkdir -p $CLIBS_PATH/data/Plugins || exit 1
@@ -288,7 +144,6 @@ else
   (cd $CLIBS_PATH/data/lib/python2.7/site-packages; ln -sf ../../../Plugins/PySide . )
   rm -rf $CLIBS_PATH/data/lib/python2.7/{test,config} || exit 1
 fi
-rm -f $CLIBS_PATH/data/Plugins/PySide/{QtDeclarative,QtHelp,QtScript,QtScriptTools,QtSql,QtTest,QtUiTools,QtXmlPatterns}.so || exit 1
 (cd $CLIBS_PATH ; find . -type d -name __pycache__ -exec rm -rf {} \;)
 strip -s $CLIBS_PATH/data/Plugins/PySide/* $CLIBS_PATH/data/lib/python*/* $CLIBS_PATH/data/lib/python*/*/*
 
@@ -305,17 +160,8 @@ cp -av $INSTALL_PATH/Plugins/Arena.ofx.bundle $OFX_ARENA_PATH/data/Plugins/ || e
 strip -s $OFX_ARENA_PATH/data/Plugins/*/*/*/*
 echo "ImageMagick License:" >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cat $INSTALL_PATH/docs/imagemagick/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
-echo "LCMS License:" >>$OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
-cat $INSTALL_PATH/docs/lcms/COPYING >>$OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
-
-ARENA_LIBS=$OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Libraries
-mkdir -p $ARENA_LIBS || exit 1
-OFX_ARENA_DEPENDS=$(ldd $OFX_ARENA_PATH/data/Plugins/*/*/*/*|grep opt | awk '{print $3}')
-for x in $OFX_ARENA_DEPENDS; do
-  cp -v $x $ARENA_LIBS/ || exit 1
-done
-strip -s $ARENA_LIBS/*
-rm -rf $ARENA_LIBS/libcairo*
+#echo "LCMS License:" >>$OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
+#cat $INSTALL_PATH/docs/lcms/COPYING >>$OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 
 # OFX CV
 OFX_CV_VERSION=$TAG
@@ -324,26 +170,20 @@ mkdir -p $OFX_CV_PATH/{data,meta} $OFX_CV_PATH/data/Plugins $OFX_CV_PATH/data/do
 cat $XML/openfx-opencv.xml | sed "s/_VERSION_/${OFX_CV_VERSION}/;s/_DATE_/${DATE}/" > $OFX_CV_PATH/meta/package.xml || exit 1
 cat $QS/openfx-opencv.qs > $OFX_CV_PATH/meta/installscript.qs || exit 1
 cp -a $INSTALL_PATH/docs/openfx-opencv $OFX_CV_PATH/data/docs/ || exit 1
-cat $OFX_CV_PATH/data/docs/openfx-opencv/README > $OFX_CV_PATH/meta/license.txt || exit 1
+cat $OFX_CV_PATH/data/docs/openfx-opencv/README > $OFX_CV_PATH/meta/ofx-cv-license.txt || exit 1
 cp -a $INSTALL_PATH/Plugins/{inpaint,segment}.ofx.bundle $OFX_CV_PATH/data/Plugins/ || exit 1
 strip -s $OFX_CV_PATH/data/Plugins/*/*/*/*
 
-mkdir -p $OFX_CV_PATH/data/lib || exit 1
-OFX_CV_DEPENDS=$(ldd $OFX_CV_PATH/data/Plugins/*/*/*/*|grep opt | awk '{print $3}')
-for x in $OFX_CV_DEPENDS; do
-  cp -v $x $OFX_CV_PATH/data/lib/ || exit 1
-done
-strip -s $OFX_CV_PATH/data/lib/*
-cp -a $INSTALL_PATH/docs/opencv $OFX_CV_PATH/data/docs/ || exit 1
-cat $INSTALL_PATH/docs/opencv/LICENSE >> $OFX_CV_PATH/meta/ofx-cv-license.txt || exit 1
 
-mkdir -p $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Libraries || exit 1
-mv $OFX_CV_PATH/data/lib/* $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Libraries/ || exit 1
-(cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle; ln -sf ../inpaint.ofx.bundle/Libraries .)
-rm -rf $OFX_CV_PATH/data/lib || exit 1
+
+
+
+
+
+echo "tmp done"
+exit 1
 
 # Clean and perms
-chown root:root -R $INSTALLER/*
 (cd $INSTALLER; find . -type d -name .git -exec rm -rf {} \;)
 
 # Build repo and package
