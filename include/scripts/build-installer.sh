@@ -141,13 +141,13 @@ if [ "$PYV" == "3" ]; then
 else
   cp -a $INSTALL_PATH/lib/python2.7 $CLIBS_PATH/data/lib/ || exit 1
   mv $CLIBS_PATH/data/lib/python2.7/site-packages/PySide $CLIBS_PATH/data/Plugins/ || exit 1
-  (cd $CLIBS_PATH/data/lib/python2.7/site-packages; ln -sf ../../../Plugins/PySide . )
   rm -rf $CLIBS_PATH/data/lib/python2.7/{test,config} || exit 1
 fi
 (cd $CLIBS_PATH ; find . -type d -name __pycache__ -exec rm -rf {} \;)
 strip -s $CLIBS_PATH/data/Plugins/PySide/* $CLIBS_PATH/data/lib/python*/* $CLIBS_PATH/data/lib/python*/*/*
 
 # OFX ARENA
+ARENA_DLL="LIBCROCO-0.6-3.DLL LIBGOMP-1.DLL LIBGMODULE-2.0-0.DLL LIBGDK_PIXBUF-2.0-0.DLL LIBGOBJECT-2.0-0.DLL LIBGIO-2.0-0.DLL LIBFFI-6.DLL LIBLCMS2-2.DLL LIBPANGO-1.0-0.DLL LIBPANGOCAIRO-1.0-0.DLL LIBPANGOWIN32-1.0-0.DLL LIBPANGOFT2-1.0-0.DLL LIBRSVG-2-2.DLL LIBXML2-2.DLL"
 OFX_ARENA_VERSION=$TAG
 OFX_ARENA_PATH=$INSTALLER/packages/$ARENAPLUG_PKG
 mkdir -p $OFX_ARENA_PATH/meta $OFX_ARENA_PATH/data/Plugins || exit 1
@@ -157,6 +157,10 @@ cat $INSTALL_PATH/docs/openfx-arena/VERSION > $OFX_ARENA_PATH/meta/ofx-extra-lic
 echo "" >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cat $INSTALL_PATH/docs/openfx-arena/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cp -av $INSTALL_PATH/Plugins/Arena.ofx.bundle $OFX_ARENA_PATH/data/Plugins/ || exit 1
+for depend in $ARENA_DLL; do
+  cp $INSTALL_PATH/bin/$depend  $OFX_ARENA_PATH/data/Plugins/ARENA.ofx.bundle/Contents/Win$BIT/ || exit 1
+done
+cp $INSTALL_PATH/lib/LIBOPENCOLORIO.DLL $OFX_ARENA_PATH/data/Plugins/ARENA.ofx.bundle/Contents/Win$BIT/ || exit 1
 strip -s $OFX_ARENA_PATH/data/Plugins/*/*/*/*
 echo "ImageMagick License:" >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cat $INSTALL_PATH/docs/imagemagick/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
@@ -164,6 +168,7 @@ cat $INSTALL_PATH/docs/imagemagick/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-lic
 #cat $INSTALL_PATH/docs/lcms/COPYING >>$OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 
 # OFX CV
+CV_DLL="LIBOPENCV_CORE2411.DLL LIBOPENCV_IMGPROC2411.DLL LIBOPENCV_PHOTO2411.DLL"
 OFX_CV_VERSION=$TAG
 OFX_CV_PATH=$INSTALLER/packages/$CVPLUG_PKG
 mkdir -p $OFX_CV_PATH/{data,meta} $OFX_CV_PATH/data/Plugins $OFX_CV_PATH/data/docs/openfx-opencv || exit 1
@@ -172,10 +177,11 @@ cat $QS/openfx-opencv.qs > $OFX_CV_PATH/meta/installscript.qs || exit 1
 cp -a $INSTALL_PATH/docs/openfx-opencv $OFX_CV_PATH/data/docs/ || exit 1
 cat $OFX_CV_PATH/data/docs/openfx-opencv/README > $OFX_CV_PATH/meta/ofx-cv-license.txt || exit 1
 cp -a $INSTALL_PATH/Plugins/{inpaint,segment}.ofx.bundle $OFX_CV_PATH/data/Plugins/ || exit 1
+for depend in $CV_DLL; do
+  cp -v $INSTALL_PATH/bin/$depend  $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/ || exit 1
+done
+cp  $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/*.DLL  $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1 
 strip -s $OFX_CV_PATH/data/Plugins/*/*/*/*
-
-
-
 
 
 
