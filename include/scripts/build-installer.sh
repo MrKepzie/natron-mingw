@@ -56,7 +56,7 @@ cat $INC_PATH/config/config.xml | sed "s/_VERSION_/${NATRON_VERSION_NUMBER}/;s#_
 cp $INC_PATH/config/*.png $INSTALLER/config/ || exit 1
 
 # OFX IO
-IO_DLL="LIBFFI-6.DLL LIBICUDT55.DLL LIBIDN-11.DLL LIBP11-KIT-0.DLL LIBTASN1-6.DLL LIBGMP-10.DLL LIBGNUTLS-30.DLL LIBHOGWEED-4-1.DLL LIBNETTLE-6-1.DLL LIBICUUC55.DLL LIBLCMS2-2.DLL LIBJASPER-1.DLL AVCODEC-56.DLL LIBGSM.DLL LIBLZMA-5.DLL LIBMP3LAME-0.DLL LIBOPENJPEG-5.DLL LIBOPUS-0.DLL LIBSCHROEDINGER-1.0-0.DLL LIBSPEEX-1.DLL LIBTHEORADEC-1.DLL LIBTHEORAENC-1.DLL LIBVORBIS-0.DLL LIBVORBISENC-2.DLL LIBVPX-1.DLL LIBWAVPACK-1.DLL SWRESAMPLE-1.DLL LIBORC-0.4-0.DLL LIBOGG-0.DLL LIBMODPLUG-1.DLL LIBRTMP-1.DLL AVFORMAT-56.DLL AVUTIL-54.DLL LIBHALF-2_2.DLL LIBILMIMF-2_2.DLL LIBIEX-2_2.DLL LIBILMTHREAD-2_2.DLL LIBIMATH-2_2.DLL LIBILMIMF-2_2.DLL LIBOPENIMAGEIO.DLL LIBGIF-7.DLL LIBJPEG-8.DLL LIBRAW_R-10.DLL LIBTIFF-5.DLL LIBWEBP-5.DLL LIBBOOST_THREAD-MT.DLL LIBBOOST_SYSTEM-MT.DLL LIBBOOST_REGEX-MT.DLL LIBBOOST_FILESYSTEM-MT.DLL SWSCALE-3.DLL"
+IO_DLL="LIBICUDT55.DLL LIBIDN-11.DLL LIBP11-KIT-0.DLL LIBTASN1-6.DLL LIBGMP-10.DLL LIBGNUTLS-30.DLL LIBHOGWEED-4-1.DLL LIBNETTLE-6-1.DLL LIBICUUC55.DLL LIBLCMS2-2.DLL LIBJASPER-1.DLL AVCODEC-56.DLL LIBGSM.DLL LIBLZMA-5.DLL LIBMP3LAME-0.DLL LIBOPENJPEG-5.DLL LIBOPUS-0.DLL LIBSCHROEDINGER-1.0-0.DLL LIBSPEEX-1.DLL LIBTHEORADEC-1.DLL LIBTHEORAENC-1.DLL LIBVORBIS-0.DLL LIBVORBISENC-2.DLL LIBVPX-1.DLL LIBWAVPACK-1.DLL SWRESAMPLE-1.DLL LIBORC-0.4-0.DLL LIBOGG-0.DLL LIBMODPLUG-1.DLL LIBRTMP-1.DLL AVFORMAT-56.DLL AVUTIL-54.DLL LIBHALF-2_2.DLL LIBILMIMF-2_2.DLL LIBIEX-2_2.DLL LIBILMTHREAD-2_2.DLL LIBIMATH-2_2.DLL LIBILMIMF-2_2.DLL LIBOPENIMAGEIO.DLL LIBGIF-7.DLL LIBJPEG-8.DLL LIBRAW_R-10.DLL LIBTIFF-5.DLL LIBWEBP-5.DLL LIBBOOST_THREAD-MT.DLL LIBBOOST_SYSTEM-MT.DLL LIBBOOST_REGEX-MT.DLL LIBBOOST_FILESYSTEM-MT.DLL SWSCALE-3.DLL"
 OFX_IO_VERSION=$TAG
 OFX_IO_PATH=$INSTALLER/packages/$IOPLUG_PKG
 mkdir -p $OFX_IO_PATH/data $OFX_IO_PATH/meta $OFX_IO_PATH/data/Plugins || exit 1
@@ -102,10 +102,10 @@ strip -s $NATRON_PATH/data/bin/*
 # OCIO
 OCIO_VERSION=$COLOR_PROFILES_VERSION
 OCIO_PATH=$INSTALLER/packages/$PROFILES_PKG
-mkdir -p $OCIO_PATH/meta $OCIO_PATH/data/share || exit 1
+mkdir -p $OCIO_PATH/meta $OCIO_PATH/data/Resources || exit 1
 cat $XML/ocio.xml | sed "s/_VERSION_/${OCIO_VERSION}/;s/_DATE_/${DATE}/" > $OCIO_PATH/meta/package.xml || exit 1
 cat $QS/ocio.qs > $OCIO_PATH/meta/installscript.qs || exit 1
-cp -a $INSTALL_PATH/share/OpenColorIO-Configs $OCIO_PATH/data/share/ || exit 1
+cp -a $INSTALL_PATH/share/OpenColorIO-Configs $OCIO_PATH/data/Resources/ || exit 1
 
 # CORE LIBS
 CLIBS_VERSION=$CORELIBS_VERSION
@@ -116,7 +116,7 @@ cat $QS/corelibs.qs > $CLIBS_PATH/meta/installscript.qs || exit 1
 
 cp -a $INSTALL_PATH/share/qt4/plugins/imageformats $CLIBS_PATH/data/bin/ || exit 1
 rm -f $CLIBS_PATH/data/bin/imageformats/*d4.dll
-NATRON_DLL="LIBICONV-2.DLL LIBINTL-8.DLL GLEW32.DLL LIBGLIB-2.0-0.DLL LIBWINPTHREAD-1.DLL LIBGCC_S_SEH-1.DLL LIBSTDC++-6.DLL LIBBOOST_SERIALIZATION-MT.DLL LIBCAIRO-2.DLL LIBFREETYPE-6.DLL LIBBZ2-1.DLL LIBHARFBUZZ-0.DLL LIBPIXMAN-1-0.DLL LIBPNG16-16.DLL ZLIB1.DLL LIBEXPAT-1.DLL LIBFONTCONFIG-1.DLL LIBPYSIDE-PYTHON2.7.DLL LIBPYTHON2.7.DLL QTCORE4.DLL QTGUI4.DLL QTNETWORK4.DLL QTOPENGL4.DLL LIBSHIBOKEN-PYTHON2.7.DLL"
+NATRON_DLL="LIBFFI-6.DLL LIBICONV-2.DLL LIBINTL-8.DLL GLEW32.DLL LIBGLIB-2.0-0.DLL LIBWINPTHREAD-1.DLL LIBGCC_S_SEH-1.DLL LIBSTDC++-6.DLL LIBBOOST_SERIALIZATION-MT.DLL LIBCAIRO-2.DLL LIBFREETYPE-6.DLL LIBBZ2-1.DLL LIBHARFBUZZ-0.DLL LIBPIXMAN-1-0.DLL LIBPNG16-16.DLL ZLIB1.DLL LIBEXPAT-1.DLL LIBFONTCONFIG-1.DLL LIBPYSIDE-PYTHON2.7.DLL LIBPYTHON2.7.DLL QTCORE4.DLL QTGUI4.DLL QTNETWORK4.DLL QTOPENGL4.DLL LIBSHIBOKEN-PYTHON2.7.DLL"
 for depend in $NATRON_DLL; do
   cp $INSTALL_PATH/bin/$depend $CLIBS_PATH/data/bin/ || exit 1
 done
@@ -147,7 +147,7 @@ fi
 strip -s $CLIBS_PATH/data/Plugins/PySide/* $CLIBS_PATH/data/lib/python*/* $CLIBS_PATH/data/lib/python*/*/*
 
 # OFX ARENA
-ARENA_DLL="LIBCROCO-0.6-3.DLL LIBGOMP-1.DLL LIBGMODULE-2.0-0.DLL LIBGDK_PIXBUF-2.0-0.DLL LIBGOBJECT-2.0-0.DLL LIBGIO-2.0-0.DLL LIBFFI-6.DLL LIBLCMS2-2.DLL LIBPANGO-1.0-0.DLL LIBPANGOCAIRO-1.0-0.DLL LIBPANGOWIN32-1.0-0.DLL LIBPANGOFT2-1.0-0.DLL LIBRSVG-2-2.DLL LIBXML2-2.DLL"
+ARENA_DLL="LIBCROCO-0.6-3.DLL LIBGOMP-1.DLL LIBGMODULE-2.0-0.DLL LIBGDK_PIXBUF-2.0-0.DLL LIBGOBJECT-2.0-0.DLL LIBGIO-2.0-0.DLL LIBLCMS2-2.DLL LIBPANGO-1.0-0.DLL LIBPANGOCAIRO-1.0-0.DLL LIBPANGOWIN32-1.0-0.DLL LIBPANGOFT2-1.0-0.DLL LIBRSVG-2-2.DLL LIBXML2-2.DLL"
 OFX_ARENA_VERSION=$TAG
 OFX_ARENA_PATH=$INSTALLER/packages/$ARENAPLUG_PKG
 mkdir -p $OFX_ARENA_PATH/meta $OFX_ARENA_PATH/data/Plugins || exit 1
@@ -190,11 +190,13 @@ IO_MANIFEST=$OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT/manifest
 cat <<EOF > $IO_MANIFEST
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-<assemblyIdentity name="IO" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+<assemblyIdentity name="IO.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
 EOF
 for depend in $IO_DLL; do
   echo "<file name=\"${depend}\"></file>" >> $IO_MANIFEST || exit 1
 done
+echo "<file name=\"LIBOPENCOLORIO.DLL\"></file>" >> $IO_MANIFEST || exit 1
+echo "<file name=\"LIBSEEXPR.DLL\"></file>" >> $IO_MANIFEST || exit 1
 echo "</assembly>" >> $IO_MANIFEST || exit 1
 cd $OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"IO.ofx;2"
@@ -204,11 +206,12 @@ ARENA_MANIFEST=$OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT/ma
 cat <<EOF > $ARENA_MANIFEST
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-<assemblyIdentity name="Arena" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+<assemblyIdentity name="Arena.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
 EOF
 for depend in $ARENA_DLL; do
   echo "<file name=\"${depend}\"></file>" >> $ARENA_MANIFEST || exit 1
 done
+echo "<file name=\"LIBOPENCOLORIO.DLL\"></file>" >> $ARENA_MANIFEST || exit 1
 echo "</assembly>" >> $ARENA_MANIFEST || exit 1
 cd $OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"Arena.ofx;2"
@@ -218,7 +221,7 @@ CV_MANIFEST=$OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/manife
 cat <<EOF > $CV_MANIFEST
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-<assemblyIdentity name="CV" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+<assemblyIdentity name="inpaint.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
 EOF
 for depend in $CV_DLL; do
   echo "<file name=\"${depend}\"></file>" >> $CV_MANIFEST || exit 1
@@ -226,7 +229,7 @@ done
 echo "</assembly>" >> $CV_MANIFEST || exit 1
 cp $CV_MANIFEST $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
 cd $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT || exit 1
-mt -manifest manifest -outputresource:"inpaint.ofx;2"
+BSEEXPR.DLLmt -manifest manifest -outputresource:"inpaint.ofx;2"
 cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"segment.ofx;2"
 
@@ -250,7 +253,7 @@ if [ "$NO_INSTALLER" != "1" ]; then
 
   mkdir -p $REPO_DIR/packages || exit 1
 
-  $INSTALL_PATH/bin/repogen -v --update-new-components -p $INSTALLER/packages -c $INSTALLER/config/config.xml $REPO_DIR/packages || exit 1
+  #$INSTALL_PATH/bin/repogen -v --update-new-components -p $INSTALLER/packages -c $INSTALLER/config/config.xml $REPO_DIR/packages || exit 1
 
   mkdir -p $REPO_DIR/installers || exit 1
 
