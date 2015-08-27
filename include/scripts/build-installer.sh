@@ -229,7 +229,7 @@ done
 echo "</assembly>" >> $CV_MANIFEST || exit 1
 cp $CV_MANIFEST $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
 cd $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT || exit 1
-BSEEXPR.DLLmt -manifest manifest -outputresource:"inpaint.ofx;2"
+mt -manifest manifest -outputresource:"inpaint.ofx;2"
 cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"segment.ofx;2"
 
