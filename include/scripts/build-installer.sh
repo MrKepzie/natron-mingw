@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Build packages and installer for Linux
+# Build packages and installer for Windows
 #
 
 source $(pwd)/common.sh || exit 1
@@ -40,7 +40,6 @@ PKGOS=Windows-x86_${BIT}bit
 REPO_OS=Windows/$REPO_BRANCH/${BIT}bit/packages
 
 
-
 if [ -d $TMP_PATH ]; then
   rm -rf $TMP_PATH || exit 1
 fi
@@ -56,7 +55,7 @@ cat $INC_PATH/config/config.xml | sed "s/_VERSION_/${NATRON_VERSION_NUMBER}/;s#_
 cp $INC_PATH/config/*.png $INSTALLER/config/ || exit 1
 
 # OFX IO
-IO_DLL="LIBICUDT55.DLL LIBIDN-11.DLL LIBP11-KIT-0.DLL LIBTASN1-6.DLL LIBGMP-10.DLL LIBGNUTLS-30.DLL LIBHOGWEED-4-1.DLL LIBNETTLE-6-1.DLL LIBICUUC55.DLL LIBLCMS2-2.DLL LIBJASPER-1.DLL AVCODEC-56.DLL LIBGSM.DLL LIBLZMA-5.DLL LIBMP3LAME-0.DLL LIBOPENJPEG-5.DLL LIBOPUS-0.DLL LIBSCHROEDINGER-1.0-0.DLL LIBSPEEX-1.DLL LIBTHEORADEC-1.DLL LIBTHEORAENC-1.DLL LIBVORBIS-0.DLL LIBVORBISENC-2.DLL LIBVPX-1.DLL LIBWAVPACK-1.DLL SWRESAMPLE-1.DLL LIBORC-0.4-0.DLL LIBOGG-0.DLL LIBMODPLUG-1.DLL LIBRTMP-1.DLL AVFORMAT-56.DLL AVUTIL-54.DLL LIBHALF-2_2.DLL LIBILMIMF-2_2.DLL LIBIEX-2_2.DLL LIBILMTHREAD-2_2.DLL LIBIMATH-2_2.DLL LIBILMIMF-2_2.DLL LIBOPENIMAGEIO.DLL LIBGIF-7.DLL LIBJPEG-8.DLL LIBRAW_R-10.DLL LIBTIFF-5.DLL LIBWEBP-5.DLL LIBBOOST_THREAD-MT.DLL LIBBOOST_SYSTEM-MT.DLL LIBBOOST_REGEX-MT.DLL LIBBOOST_FILESYSTEM-MT.DLL SWSCALE-3.DLL"
+IO_DLL="LIBICUDT55.DLL LIBIDN-11.DLL LIBP11-KIT-0.DLL LIBTASN1-6.DLL LIBGMP-10.DLL LIBGNUTLS-30.DLL LIBHOGWEED-4-1.DLL LIBNETTLE-6-1.DLL LIBICUUC55.DLL LIBLCMS2-2.DLL LIBJASPER-1.DLL AVCODEC-56.DLL LIBGSM.DLL LIBLZMA-5.DLL LIBMP3LAME-0.DLL LIBOPENJPEG-5.DLL LIBOPUS-0.DLL LIBSCHROEDINGER-1.0-0.DLL LIBSPEEX-1.DLL LIBTHEORADEC-1.DLL LIBTHEORAENC-1.DLL LIBVORBIS-0.DLL LIBVORBISENC-2.DLL LIBVPX-1.DLL LIBWAVPACK-1.DLL SWRESAMPLE-1.DLL LIBORC-0.4-0.DLL LIBOGG-0.DLL LIBMODPLUG-1.DLL LIBRTMP-1.DLL AVFORMAT-56.DLL AVUTIL-54.DLL LIBHALF-2_2.DLL LIBILMIMF-2_2.DLL LIBIEX-2_2.DLL LIBILMTHREAD-2_2.DLL LIBIMATH-2_2.DLL LIBOPENIMAGEIO.DLL LIBGIF-7.DLL LIBJPEG-8.DLL LIBRAW_R-10.DLL LIBTIFF-5.DLL LIBWEBP-5.DLL LIBBOOST_THREAD-MT.DLL LIBBOOST_SYSTEM-MT.DLL LIBBOOST_REGEX-MT.DLL LIBBOOST_FILESYSTEM-MT.DLL SWSCALE-3.DLL"
 OFX_IO_VERSION=$TAG
 OFX_IO_PATH=$INSTALLER/packages/$IOPLUG_PKG
 mkdir -p $OFX_IO_PATH/data $OFX_IO_PATH/meta $OFX_IO_PATH/data/Plugins || exit 1
@@ -98,7 +97,6 @@ mv natron.pdf $NATRON_PATH/data/docs/Natron_Python_API_Reference.pdf || exit 1
 rm $NATRON_PATH/data/docs/TuttleOFX-README.txt || exit 1
 strip -s $NATRON_PATH/data/bin/*
 
-
 # OCIO
 OCIO_VERSION=$COLOR_PROFILES_VERSION
 OCIO_PATH=$INSTALLER/packages/$PROFILES_PKG
@@ -122,7 +120,6 @@ for depend in $NATRON_DLL; do
 done
 
 
-
 # TODO: At this point send unstripped binaries (and debug binaries?) to Socorro server for breakpad
 
 strip -s $CLIBS_PATH/data/bin/*
@@ -136,13 +133,13 @@ mkdir -p $CLIBS_PATH/data/Plugins || exit 1
 if [ "$PYV" == "3" ]; then
   cp -a $INSTALL_PATH/lib/python3.4 $CLIBS_PATH/data/lib/ || exit 1
   mv $CLIBS_PATH/data/lib/python3.4/site-packages/PySide $CLIBS_PATH/data/Plugins/ || exit 1
-  (cd $CLIBS_PATH/data/lib/python3.4/site-packages; ln -sf ../../../Plugins/PySide . )
   rm -rf $CLIBS_PATH/data/lib/python3.4/{test,config-3.4m} || exit 1
 else
   cp -a $INSTALL_PATH/lib/python2.7 $CLIBS_PATH/data/lib/ || exit 1
   mv $CLIBS_PATH/data/lib/python2.7/site-packages/PySide $CLIBS_PATH/data/Plugins/ || exit 1
   rm -rf $CLIBS_PATH/data/lib/python2.7/{test,config} || exit 1
 fi
+# TODO remove unused pyside libs
 (cd $CLIBS_PATH ; find . -type d -name __pycache__ -exec rm -rf {} \;)
 strip -s $CLIBS_PATH/data/Plugins/PySide/* $CLIBS_PATH/data/lib/python*/* $CLIBS_PATH/data/lib/python*/*/*
 
@@ -178,13 +175,13 @@ cp -a $INSTALL_PATH/docs/openfx-opencv $OFX_CV_PATH/data/docs/ || exit 1
 cat $OFX_CV_PATH/data/docs/openfx-opencv/README > $OFX_CV_PATH/meta/ofx-cv-license.txt || exit 1
 cp -a $INSTALL_PATH/Plugins/{inpaint,segment}.ofx.bundle $OFX_CV_PATH/data/Plugins/ || exit 1
 for depend in $CV_DLL; do
-  cp -v $INSTALL_PATH/bin/$depend  $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/ || exit 1
+  cp -v $INSTALL_PATH/bin/$depend $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/ || exit 1
+  cp -v $INSTALL_PATH/bin/$depend $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
 done
-cp  $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/*.DLL  $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1 
+cp $INSTALL_PATH/bin/LIBOPENCV_LEGACY2411.DLL $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
 strip -s $OFX_CV_PATH/data/Plugins/*/*/*/*
 
-
-#manifests
+# manifests
 
 IO_MANIFEST=$OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT/manifest
 cat <<EOF > $IO_MANIFEST
@@ -201,7 +198,6 @@ echo "</assembly>" >> $IO_MANIFEST || exit 1
 cd $OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"IO.ofx;2"
 
-
 ARENA_MANIFEST=$OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT/manifest
 cat <<EOF > $ARENA_MANIFEST
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -216,23 +212,31 @@ echo "</assembly>" >> $ARENA_MANIFEST || exit 1
 cd $OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"Arena.ofx;2"
 
-
-CV_MANIFEST=$OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/manifest
-cat <<EOF > $CV_MANIFEST
+INPAINT_MANIFEST=$OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/manifest
+cat <<EOF > $INPAINT_MANIFEST
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
 <assemblyIdentity name="inpaint.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
 EOF
 for depend in $CV_DLL; do
-  echo "<file name=\"${depend}\"></file>" >> $CV_MANIFEST || exit 1
+  echo "<file name=\"${depend}\"></file>" >> $INPAINT_MANIFEST || exit 1
 done
-echo "</assembly>" >> $CV_MANIFEST || exit 1
-cp $CV_MANIFEST $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
+echo "</assembly>" >> $INPAINT_MANIFEST || exit 1
 cd $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"inpaint.ofx;2"
+
+SEGMENT_MANIFEST=$OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/manifest
+cat <<EOF > $SEGMENT_MANIFEST
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assemblyIdentity name="inpaint.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+EOF
+for depend in $CV_DLL; do
+  echo "<file name=\"${depend}\"></file>" >> $SEGMENT_MANIFEST || exit 1
+done
+echo "<file name=\"LIBOPENCV_LEGACY2411.DLL\"></file>" >> $SEGMENT_MANIFEST || exit 1
 cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"segment.ofx;2"
-
 
 # Clean and perms
 (cd $INSTALLER; find . -type d -name .git -exec rm -rf {} \;)
