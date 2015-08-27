@@ -166,6 +166,7 @@ cat $INSTALL_PATH/docs/imagemagick/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-lic
 
 # OFX CV
 CV_DLL="LIBOPENCV_CORE2411.DLL LIBOPENCV_IMGPROC2411.DLL LIBOPENCV_PHOTO2411.DLL"
+SEGMENT_DLL="LIBLZMA-5.DLL LIBOPENCV_FLANN2411.DLL LIBJASPER-1.DLL LIBJPEG-8.DLL LIBTIFF-5.DLL LIBOPENCV_CALIB3D2411.DLL LIBOPENCV_FEATURES2D2411.DLL LIBOPENCV_HIGHGUI2411.DLL LIBOPENCV_ML2411.DLL LIBOPENCV_VIDEO2411.DLL LIBOPENCV_LEGACY2411.DLL"
 OFX_CV_VERSION=$TAG
 OFX_CV_PATH=$INSTALLER/packages/$CVPLUG_PKG
 mkdir -p $OFX_CV_PATH/{data,meta} $OFX_CV_PATH/data/Plugins $OFX_CV_PATH/data/docs/openfx-opencv || exit 1
@@ -178,7 +179,9 @@ for depend in $CV_DLL; do
   cp -v $INSTALL_PATH/bin/$depend $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/ || exit 1
   cp -v $INSTALL_PATH/bin/$depend $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
 done
-cp $INSTALL_PATH/bin/LIBOPENCV_LEGACY2411.DLL $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
+for depend in $SEGMENT_DLL; do
+  cp -v $INSTALL_PATH/bin/$depend $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
+done
 strip -s $OFX_CV_PATH/data/Plugins/*/*/*/*
 
 # manifests
@@ -229,12 +232,14 @@ SEGMENT_MANIFEST=$OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/m
 cat <<EOF > $SEGMENT_MANIFEST
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-<assemblyIdentity name="inpaint.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+<assemblyIdentity name="segment.ofx" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
 EOF
 for depend in $CV_DLL; do
   echo "<file name=\"${depend}\"></file>" >> $SEGMENT_MANIFEST || exit 1
 done
-echo "<file name=\"LIBOPENCV_LEGACY2411.DLL\"></file>" >> $SEGMENT_MANIFEST || exit 1
+for depend in $SEGMENT_DLL; do
+  echo "<file name=\"${depend}\"></file>" >> $SEGMENT_MANIFEST || exit 1
+done
 echo "</assembly>" >> $SEGMENT_MANIFEST || exit 1
 cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"segment.ofx;2"
