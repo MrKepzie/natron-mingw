@@ -158,9 +158,9 @@ echo "" >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cat $INSTALL_PATH/docs/openfx-arena/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cp -av $INSTALL_PATH/Plugins/Arena.ofx.bundle $OFX_ARENA_PATH/data/Plugins/ || exit 1
 for depend in $ARENA_DLL; do
-  cp $INSTALL_PATH/bin/$depend  $OFX_ARENA_PATH/data/Plugins/ARENA.ofx.bundle/Contents/Win$BIT/ || exit 1
+  cp $INSTALL_PATH/bin/$depend  $OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT/ || exit 1
 done
-cp $INSTALL_PATH/lib/LIBOPENCOLORIO.DLL $OFX_ARENA_PATH/data/Plugins/ARENA.ofx.bundle/Contents/Win$BIT/ || exit 1
+cp $INSTALL_PATH/lib/LIBOPENCOLORIO.DLL $OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT/ || exit 1
 strip -s $OFX_ARENA_PATH/data/Plugins/*/*/*/*
 echo "ImageMagick License:" >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
 cat $INSTALL_PATH/docs/imagemagick/LICENSE >> $OFX_ARENA_PATH/meta/ofx-extra-license.txt || exit 1
@@ -184,10 +184,52 @@ cp  $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/*.DLL  $OFX_CV
 strip -s $OFX_CV_PATH/data/Plugins/*/*/*/*
 
 
+#manifests
+
+IO_MANIFEST=$OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT/manifest
+cat <<EOF > $IO_MANIFEST
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assemblyIdentity name="IO" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+EOF
+for depend in $IO_DLL; do
+  echo "<file name=\"${depend}\"></file>" >> $IO_MANIFEST || exit 1
+done
+echo "</assembly>" >> $IO_MANIFEST || exit 1
+cd $OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT || exit 1
+mt -manifest manifest -outputresource:"IO.ofx;2"
 
 
-echo "tmp done"
-exit 1
+ARENA_MANIFEST=$OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT/manifest
+cat <<EOF > $ARENA_MANIFEST
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assemblyIdentity name="Arena" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+EOF
+for depend in $ARENA_DLL; do
+  echo "<file name=\"${depend}\"></file>" >> $ARENA_MANIFEST || exit 1
+done
+echo "</assembly>" >> $ARENA_MANIFEST || exit 1
+cd $OFX_ARENA_PATH/data/Plugins/Arena.ofx.bundle/Contents/Win$BIT || exit 1
+mt -manifest manifest -outputresource:"Arena.ofx;2"
+
+
+CV_MANIFEST=$OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT/manifest
+cat <<EOF > $CV_MANIFEST
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+<assemblyIdentity name="CV" version="1.0.0.0" type="win32" processorArchitecture="amd64"/>
+EOF
+for depend in $CV_DLL; do
+  echo "<file name=\"${depend}\"></file>" >> $CV_MANIFEST || exit 1
+done
+echo "</assembly>" >> $CV_MANIFEST || exit 1
+cp $CV_MANIFEST $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT/ || exit 1
+cd $OFX_CV_PATH/data/Plugins/inpaint.ofx.bundle/Contents/Win$BIT || exit 1
+mt -manifest manifest -outputresource:"inpaint.ofx;2"
+cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT || exit 1
+mt -manifest manifest -outputresource:"segment.ofx;2"
+
 
 # Clean and perms
 (cd $INSTALLER; find . -type d -name .git -exec rm -rf {} \;)
@@ -200,8 +242,8 @@ if [ "$NO_INSTALLER" != "1" ]; then
     ONLINE_TAG=release
   fi
 
-  ONLINE_INSTALL=Natron-${PKGOS}-online-install-$ONLINE_TAG
-  BUNDLED_INSTALL=Natron-$NATRON_VERSION-${PKGOS}
+  ONLINE_INSTALL=Natron-${PKGOS}-online-install-$ONLINE_TAG.exe
+  BUNDLED_INSTALL=Natron-$NATRON_VERSION-${PKGOS}.exe
 
   REPO_DIR=$REPO_DIR_PREFIX$ONLINE_TAG
   rm -rf $REPO_DIR
@@ -214,15 +256,10 @@ if [ "$NO_INSTALLER" != "1" ]; then
 
   if [ "$OFFLINE" != "0" ]; then
     $INSTALL_PATH/bin/binarycreator -v -f -p $INSTALLER/packages -c $INSTALLER/config/config.xml -i $PACKAGES $REPO_DIR/installers/$BUNDLED_INSTALL || exit 1 
-    cd $REPO_DIR/installers || exit 1
-    tar cvvzf $BUNDLED_INSTALL.tgz $BUNDLED_INSTALL || exit 1
-    ln -sf $BUNDLED_INSTALL.tgz Natron-latest-$PKGOS-$ONLINE_TAG.tgz || exit 1
   fi
 
   $INSTALL_PATH/bin/binarycreator -v -n -p $INSTALLER/packages -c $INSTALLER/config/config.xml $ONLINE_INSTALL || exit 1
-  tar cvvzf $ONLINE_INSTALL.tgz $ONLINE_INSTALL || exit 1
 fi
 
-rm $REPO_DIR/installers/$ONLINE_INSTALL $REPO_DIR/installers/$BUNDLED_INSTALL
 
 echo "All Done!!!"
