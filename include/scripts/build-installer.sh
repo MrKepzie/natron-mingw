@@ -235,6 +235,7 @@ for depend in $CV_DLL; do
   echo "<file name=\"${depend}\"></file>" >> $SEGMENT_MANIFEST || exit 1
 done
 echo "<file name=\"LIBOPENCV_LEGACY2411.DLL\"></file>" >> $SEGMENT_MANIFEST || exit 1
+echo "</assembly>" >> $SEGMENT_MANIFEST || exit 1
 cd $OFX_CV_PATH/data/Plugins/segment.ofx.bundle/Contents/Win$BIT || exit 1
 mt -manifest manifest -outputresource:"segment.ofx;2"
 
