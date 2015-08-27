@@ -52,7 +52,7 @@ Component.prototype.isDefault = function()
 
 Component.prototype.beginInstallation = function()
 {
-    installer.setValue("RunProgram", "@TargetDir@/Natron");
+    installer.setValue("RunProgram", "@TargetDir@\\bin\\Natron.exe");
 }
 
 Component.prototype.createOperations = function()
@@ -60,7 +60,8 @@ Component.prototype.createOperations = function()
     try {
         // call the base create operations function
         component.createOperations();
-	component.addOperation("CreateDesktopEntry","Natron2.desktop","Version=1.0\nType=Application\nTerminal=false\nName=Natron2\nMimeType=application/x-ntp;\nExec=@TargetDir@/Natron %U\nGenericName=Compositing software\nComment=Node-graph based compositing software\nIcon=natronIcon256_linux\nCategories=Graphics;2DGraphics;RasterGraphics;\n");
+	component.addOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@StartMenuDir@/Natron.lnk",
+            "workingDirectory=@TargetDir@");
     } catch (e) {
         print(e);
     }

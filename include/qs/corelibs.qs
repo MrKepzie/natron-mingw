@@ -55,8 +55,8 @@ Component.prototype.createOperations = function()
     try {
         // call the base create operations function
         component.createOperations();
-	component.addOperation("CreateDesktopEntry","Natron2Setup.desktop","Version=1.0\nType=Application\nName=Natron2 Setup\nExec=@TargetDir@/NatronSetup\nIcon=natronIcon256_linux\nCategories=Graphics;2DGraphics;RasterGraphics;\n");
-	component.addOperation("InstallIcons","@TargetDir@/share/pixmaps");
+        component.addOperation("CreateShortcut", "@TargetDir@/NatronSetup.exe", "@StartMenuDir@/NatronSetup.lnk",
+            "workingDirectory=@TargetDir@");
     } catch (e) {
         print(e);
     }
