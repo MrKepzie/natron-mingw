@@ -110,10 +110,10 @@ fi
 $INSTALL_PATH/bin/qmake -r CONFIG+=release ${SNAP} DEFINES+=QT_NO_DEBUG_OUTPUT ../Project.pro || exit 1
 make -j${MKJOBS} || exit 1
 
-cp App/Natron.exe $INSTALL_PATH/bin/ || exit 1
-cp Renderer/NatronRenderer.exe $INSTALL_PATH/bin/ || exit 1
-if [ -f CrashReporter/NatronCrashReporter.exe ]; then
-  cp CrashReporter/NatronCrashReporter.exe $INSTALL_PATH/bin/ || exit 1
+cp App/release/Natron.exe $INSTALL_PATH/bin/ || exit 1
+cp Renderer/release/NatronRenderer.exe $INSTALL_PATH/bin/ || exit 1
+if [ -f CrashReporter/release/NatronCrashReporter.exe ]; then
+  cp CrashReporter/release/NatronCrashReporter.exe $INSTALL_PATH/bin/ || exit 1
 else
   echo "CrashReporter missing!!! Something broken?"
 fi
@@ -121,10 +121,10 @@ fi
 if [ "$NODEBUG" == "" ]; then
   $INSTALL_PATH/bin/qmake -r CONFIG+=debug ${SNAP} ../Project.pro || exit 1
   make -j${MKJOBS} || exit 1
-  cp App/Natron.exe $INSTALL_PATH/bin/Natron-debug.exe || exit 1
-  cp Renderer/NatronRenderer.exe $INSTALL_PATH/bin/NatronRenderer-debug.exe || exit 1
-  if [ -f CrashReporter/NatronCrashReporter.exe ]; then
-    cp CrashReporter/NatronCrashReporter.exe $INSTALL_PATH/bin/NatronCrashReporter-debug.exe || exit 1
+  cp App/debug/Natron.exe $INSTALL_PATH/bin/Natron-debug.exe || exit 1
+  cp Renderer/debug/NatronRenderer.exe $INSTALL_PATH/bin/NatronRenderer-debug.exe || exit 1
+  if [ -f CrashReporter/debug/NatronCrashReporter.exe ]; then
+    cp CrashReporter/debug/NatronCrashReporter.exe $INSTALL_PATH/bin/NatronCrashReporter-debug.exe || exit 1
   else
     echo "CrashReporter missing!!! Something broken?"
   fi
