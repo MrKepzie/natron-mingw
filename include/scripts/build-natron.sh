@@ -118,7 +118,8 @@ else
   echo "CrashReporter missing!!! Something broken?"
 fi
 
-if [ "$NODEBUG" == "" ]; then
+if [ "$NODEBUG" == "" ] || [ "$BUILD_SNAPSHOT" != "1" ]; then
+  make clean
   $INSTALL_PATH/bin/qmake -r CONFIG+=debug ${SNAP} ../Project.pro || exit 1
   make -j${MKJOBS} || exit 1
   cp App/debug/Natron.exe $INSTALL_PATH/bin/Natron-debug.exe || exit 1
