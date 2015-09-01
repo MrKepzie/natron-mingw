@@ -63,6 +63,10 @@ Component.prototype.createOperations = function()
 	component.addOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@StartMenuDir@/Natron.lnk",
             "workingDirectory=@TargetDir@");
 
+
+    component.addOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@DesktopDir@/Natron.lnk",
+            "workingDirectory=@TargetDir@");
+
     component.addOperation("RegisterFileType",
                             "ntp",
                             "@TargetDir@" + " '%1'",
