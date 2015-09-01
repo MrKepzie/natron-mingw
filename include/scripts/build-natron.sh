@@ -2,6 +2,8 @@
 #
 # Build Natron for Windows
 #
+#Options: BUILD_DEBUG=1: Build debug binaries of Natron as well
+# BUILD_SNAPSHOT=1: Tag Natron as a snapshot build
 # Usage: build-natron.sh BIT "branch"
 
 source $(pwd)/common.sh || exit 1
@@ -118,7 +120,7 @@ else
   echo "CrashReporter missing!!! Something broken?"
 fi
 
-if [ "$NODEBUG" == "" ] || [ "$BUILD_SNAPSHOT" != "1" ]; then
+if [ "$BUILD_DEBUG" == "1" ] || [ "$BUILD_SNAPSHOT" != "1" ]; then
   make clean
   $INSTALL_PATH/bin/qmake -r CONFIG+=debug ${SNAP} ../Project.pro || exit 1
   make -j${MKJOBS} || exit 1
