@@ -1,19 +1,13 @@
 Natron on Windows
 ==================
 
-Scripts used to build and distribute [Natron](http://www.natron.fr) from Windows to Windows.
+Scripts used to build and distribute [Natron](http://www.natron.fr) from Windows to Windows using MingW-w64 (via MSYS2).
 
 Build server installation
 =========================
 
 Requires any Windows machine (XP+).
 These scripts make use of [MSYS2](https://sourceforge.net/projects/msys2/) to operate.  
-
-Clone this repository 
-
-    git clone https://github.com/MrKepzie/natron-mingw
-	cd natron-mingw
-	git submodule update -i --recursive
 
 Create the local.sh file in the root of natron-mingw to specify various infos, e.g:
 
