@@ -80,6 +80,7 @@ REPO_DIR_PREFIX=$CWD/build_
 #
 
 THIRD_PARTY_SRC_URL=$REPO_URL/Third_Party_Sources
+THIRD_PARTY_BIN_URL=$REPO_URL/Third_Party_Binaries
 
 GIT_OPENCV=https://github.com/devernay/openfx-opencv.git
 GIT_ARENA=https://github.com/olear/openfx-arena.git
@@ -123,6 +124,7 @@ MAGICK_TAR=openfx-ImageMagick-6.8.10-1.tar.gz
 GIF_TAR=giflib-5.1.1.tar.gz
 #SSL_TAR=openssl-1.0.0r.tar.gz 
 JASP_TAR=jasper-1.900.1.zip
+INSTALLER_BIN_TAR=natron-win32-installer-extra.zip
 NATRON_API_DOC=https://media.readthedocs.org/pdf/natron/workshop/natron.pdf # TODO generate own
 
 GCC_V=$(gcc --version | awk '{print $0;exit 0;}' | awk '{print $7}' | sed 's#\.# #g')

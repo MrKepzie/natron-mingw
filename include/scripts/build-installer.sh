@@ -144,7 +144,9 @@ else
 fi
 # TODO remove unused pyside libs
 (cd $CLIBS_PATH ; find . -type d -name __pycache__ -exec rm -rf {} \;)
-strip -s $CLIBS_PATH/data/Plugins/PySide/* $CLIBS_PATH/data/lib/python*/* $CLIBS_PATH/data/lib/python*/*/*
+strip -s $CLIBS_PATH/data/Plugins/PySide/*
+strip -s $CLIBS_PATH/data/lib/python*/* 
+strip -s $CLIBS_PATH/data/lib/python*/*/*
 
 # OFX ARENA
 ARENA_DLL="LIBCROCO-0.6-3.DLL LIBGOMP-1.DLL LIBGMODULE-2.0-0.DLL LIBGDK_PIXBUF-2.0-0.DLL LIBGOBJECT-2.0-0.DLL LIBGIO-2.0-0.DLL LIBLCMS2-2.DLL LIBPANGO-1.0-0.DLL LIBPANGOCAIRO-1.0-0.DLL LIBPANGOWIN32-1.0-0.DLL LIBPANGOFT2-1.0-0.DLL LIBRSVG-2-2.DLL LIBXML2-2.DLL"

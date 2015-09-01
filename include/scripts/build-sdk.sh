@@ -3,6 +3,7 @@
 #options:
 #TAR_SDK=1 : Make an archive of the SDK when building is done and store it in $SRC_PATH
 #UPLOAD_SDK=1 : Upload the SDK tar archive to $REPO_DEST if TAR_SDK=1
+#DOWNLOAD_INSTALLER=1: Force a download of the installer
 
 source $(pwd)/common.sh || exit 1
 
@@ -212,6 +213,15 @@ if [ ! -z "$TAR_SDK" ]; then
 
 fi
 
+#Make sure we have mt.exe for embedding manifests
+
+if [ -z "/usr/bin/mt.exe" ] || [ "$DOWNLOAD_INSTALLER" == "1" ]; then
+	cd $TMP_PATH
+	wget $THIRD_PARTY_BIN_URL/$INSTALLER_BIN_TAR -O $SRC_PATH/$INSTALLER_BIN_TAR || exit 1
+	unzip $CWD/src/$INSTALLER_BIN_TAR || exit 1
+	cd natron-win32-installer*
+	cp *.exe /usr/bin || exit 1
+fi
 
 echo
 echo "Natron build-sdk done."
