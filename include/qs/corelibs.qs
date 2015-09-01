@@ -55,7 +55,7 @@ Component.prototype.createOperations = function()
     try {
         // call the base create operations function
         component.createOperations();
-        component.addOperation("CreateShortcut", "@TargetDir@/NatronSetup.exe", "@StartMenuDir@/NatronSetup.lnk",
+        component.addElevatedOperation("CreateShortcut", "@TargetDir@/NatronSetup.exe", "@StartMenuDir@/NatronSetup.lnk",
             "workingDirectory=@TargetDir@");
     } catch (e) {
         print(e);

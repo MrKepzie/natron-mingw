@@ -4,6 +4,7 @@
     <Description>Color configurations for use with OpenColorIO.</Description>
     <Version>_VERSION_</Version>
     <ReleaseDate>_DATE_</ReleaseDate>
+<RequiresAdminRights>true</RequiresAdminRights>
     <Name>fr.inria.natron.color</Name>
     <SortingPriority>123</SortingPriority>
     <Default>script</Default>

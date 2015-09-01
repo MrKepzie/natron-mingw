@@ -60,28 +60,28 @@ Component.prototype.createOperations = function()
     try {
         // call default implementation to actually install the registeredfile
         component.createOperations();
-	component.addOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@StartMenuDir@/Natron.lnk",
+	component.addElevatedOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@StartMenuDir@/Natron.lnk",
             "workingDirectory=@TargetDir@");
 
 
-    component.addOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@DesktopDir@/Natron.lnk",
+    component.addElevatedOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@DesktopDir@/Natron.lnk",
             "workingDirectory=@TargetDir@");
 
-    component.addOperation("RegisterFileType",
+    component.addElevatedOperation("RegisterFileType",
                             "ntp",
                             "@TargetDir@" + " '%1'",
                             "Natron Project file",
                             "natron/project",
                             "@TargetDir@/natronProjectIcon_windows.ico");
 
-    component.addOperation("RegisterFileType",
+    component.addElevatedOperation("RegisterFileType",
                             "nl",
                             "",
                             "Natron Layout file",
                             "natron/layout",
                             "@TargetDir@/natronProjectIcon_windows.ico");
 
-    component.addOperation("RegisterFileType",
+    component.addElevatedOperation("RegisterFileType",
                             "nps",
                             "",
                             "Natron Presets file",
