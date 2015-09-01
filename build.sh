@@ -62,7 +62,7 @@ else
 fi
 
 if [ "$3" != "" ]; then
-    JOBS=$2
+    JOBS=$3
 else
     #Default to 4 threads
     JOBS=$DEFAULT_MKJOBS
