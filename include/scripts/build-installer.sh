@@ -299,8 +299,8 @@ if [ "$NO_INSTALLER" != "1" ]; then
     ONLINE_TAG=release
   fi
 
-  ONLINE_INSTALL=Natron-${PKGOS}-online-install-$ONLINE_TAG.exe
-  BUNDLED_INSTALL=Natron-$NATRON_VERSION-${PKGOS}.exe
+  ONLINE_INSTALL=Natron-${PKGOS}-online-$ONLINE_TAG-setup.exe
+  BUNDLED_INSTALL=Natron-$NATRON_VERSION-${PKGOS}-setup.exe
 
   REPO_DIR=$REPO_DIR_PREFIX$ONLINE_TAG
   rm -rf $REPO_DIR
