@@ -6,3 +6,4 @@ releases
 repo
 .autobuild
 logs
+*.exe

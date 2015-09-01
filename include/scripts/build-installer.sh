@@ -268,14 +268,14 @@ if [ "$NO_INSTALLER" != "1" ]; then
 
   mkdir -p $REPO_DIR/packages || exit 1
 
-  #$INSTALL_PATH/bin/repogen -v --update-new-components -p $INSTALLER/packages -c $INSTALLER/config/config.xml $REPO_DIR/packages || exit 1
+  /usr/bin/repogen -v --update-new-components -p $INSTALLER/packages -c $INSTALLER/config/config.xml $REPO_DIR/packages || exit 1
 
   mkdir -p $REPO_DIR/installers || exit 1
 
   if [ "$OFFLINE" != "0" ]; then
     /usr/bin/binarycreator -v -f -p $INSTALLER/packages -c $INSTALLER/config/config.xml -i $PACKAGES $REPO_DIR/installers/$BUNDLED_INSTALL || exit 1 
   fi
-
+  cd $REPO_DIR/installers || exit 1
   /usr/bin/binarycreator -v -n -p $INSTALLER/packages -c $INSTALLER/config/config.xml $ONLINE_INSTALL || exit 1
 fi
 
