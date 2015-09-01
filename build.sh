@@ -18,8 +18,8 @@
 # OFFLINE_INSTALLER=1: Build offline installer in addition to the online installer
 # SNAPSHOT=1 : Tag build as snapshot
 # TARSRC=1 : tar sources
-
-# USAGE: build2.sh BIT "branch" noThreads
+# NATRON_LICENSE=(GPL,COMMERCIAL): When GPL, GPL binaries are bundled with Natron
+# USAGE: NATRON_LICENSE=<license> build.sh BIT "branch" noThreads
 
 source $(pwd)/common.sh || exit 1
 
@@ -41,6 +41,11 @@ if [ "$OS" == "Msys" ]; then
 else
   echo "Windows-Msys2-only!"
   exit 1
+fi
+
+if [ "$NATRON_LICENSE" != "GPL" ] && [ "$NATRON_LICENSE" != "COMMERCIAL" ]; then
+	echo "Please select a License with NATRON_LICENSE=(GPL,COMMERCIAL)"
+	exit 1
 fi
 
 if [ "$1" == "32" ]; then
@@ -108,7 +113,7 @@ fi
 if [ "$NOBUILD" != "1" ]; then
   if [ "$ONLY_PLUGINS" != "1" ]; then
     echo -n "Building Natron ... "
-    MKJOBS=$JOBS MKSRC=${TARSRC} BUILD_SNAPSHOT=${SNAPSHOT} sh $INC_PATH/scripts/build-natron.sh $BIT workshop >& $LOGS/natron.$PKGOS$BIT.$TAG.log || FAIL=1
+    NATRON_LICENSE=$NATRON_LICENSE MKJOBS=$JOBS MKSRC=${TARSRC} BUILD_SNAPSHOT=${SNAPSHOT} sh $INC_PATH/scripts/build-natron.sh $BIT workshop >& $LOGS/natron.$PKGOS$BIT.$TAG.log || FAIL=1
     if [ "$FAIL" != "1" ]; then
       echo OK
     else
@@ -119,7 +124,7 @@ if [ "$NOBUILD" != "1" ]; then
   fi
   if [ "$FAIL" != "1" ] && [ "$ONLY_NATRON" != "1" ]; then
     echo -n "Building Plugins ... "
-    MKJOBS=$JOBS MKSRC=${TARSRC} BUILD_CV=$CV BUILD_IO=$IO BUILD_MISC=$MISC BUILD_ARENA=$ARENA sh $INC_PATH/scripts/build-plugins.sh $BIT workshop >& $LOGS/plugins.$PKGOS$BIT.$TAG.log || FAIL=1
+    NATRON_LICENSE=$NATRON_LICENSE MKJOBS=$JOBS MKSRC=${TARSRC} BUILD_CV=$CV BUILD_IO=$IO BUILD_MISC=$MISC BUILD_ARENA=$ARENA sh $INC_PATH/scripts/build-plugins.sh $BIT workshop >& $LOGS/plugins.$PKGOS$BIT.$TAG.log || FAIL=1
     if [ "$FAIL" != "1" ]; then
       echo OK
     else
@@ -132,7 +137,7 @@ fi
 
 if [ "$NOPKG" != "1" ] && [ "$FAIL" != "1" ]; then
   echo -n "Building Packages ... "
-  OFFLINE=${OFFLINE_INSTALLER} NOTGZ=1 sh $INC_PATH/scripts/build-installer.sh $BIT workshop >& $LOGS/installer.$PKGOS$BIT.$TAG.log || FAIL=1
+  NATRON_LICENSE=$NATRON_LICENSE OFFLINE=${OFFLINE_INSTALLER} NOTGZ=1 BUNDLE_CV=0 BUNDLE_IO=$IO BUNDLE_MISC=$MISC BUNDLE_ARENA=$ARENA sh $INC_PATH/scripts/build-installer.sh $BIT workshop >& $LOGS/installer.$PKGOS$BIT.$TAG.log || FAIL=1
   if [ "$FAIL" != "1" ]; then
     echo OK
   else

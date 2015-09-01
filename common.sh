@@ -125,6 +125,12 @@ GIF_TAR=giflib-5.1.1.tar.gz
 #SSL_TAR=openssl-1.0.0r.tar.gz 
 JASP_TAR=jasper-1.900.1.zip
 INSTALLER_BIN_TAR=natron-win32-installer-extra.zip
+
+FFMPEG_MXE_BIN_64_GPL_TAR=ffmpeg-2.7.2-windows-x86_64-shared-GPLv2.tar.xz
+FFMPEG_MXE_BIN_32_GPL_TAR=ffmpeg-2.7.2-windows-i686-shared-GPLv2.tar.xz
+FFMPEG_MXE_BIN_64_LGPL_TAR=ffmpeg-2.7.2-windows-x86_64-shared-LGPL.tar.xz
+FFMPEG_MXE_BIN_32_LGPL_TAR=ffmpeg-2.7.2-windows-i686-shared-LGPL.tar.xz
+
 NATRON_API_DOC=https://media.readthedocs.org/pdf/natron/workshop/natron.pdf # TODO generate own
 
 GCC_V=$(gcc --version | awk '{print $0;exit 0;}' | awk '{print $7}' | sed 's#\.# #g')

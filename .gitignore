@@ -7,3 +7,6 @@ repo
 .autobuild
 logs
 *.exe
+*.7z*
+*.pdf*
+build_*
