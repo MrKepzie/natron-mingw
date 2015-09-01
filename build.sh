@@ -137,7 +137,7 @@ fi
 
 if [ "$NOPKG" != "1" ] && [ "$FAIL" != "1" ]; then
   echo -n "Building Packages ... "
-  NATRON_LICENSE=$NATRON_LICENSE OFFLINE=${OFFLINE_INSTALLER} NOTGZ=1 BUNDLE_CV=0 BUNDLE_IO=$IO BUNDLE_MISC=$MISC BUNDLE_ARENA=$ARENA sh $INC_PATH/scripts/build-installer.sh $BIT workshop >& $LOGS/installer.$PKGOS$BIT.$TAG.log || FAIL=1
+  NATRON_LICENSE=$NATRON_LICENSE OFFLINE=${OFFLINE_INSTALLER} NOTGZ=1 BUNDLE_CV=0 BUNDLE_IO=$IO BUNDLE_MISC=$MISC BUNDLE_ARENA=$ARENA sh $INC_PATH/scripts/build-installer.sh $BIT workshop	>& $LOGS/installer.$PKGOS$BIT.$TAG.log || FAIL=1
   if [ "$FAIL" != "1" ]; then
     echo OK
   else
