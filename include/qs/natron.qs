@@ -72,21 +72,21 @@ Component.prototype.createOperations = function()
                             "ntp",
                             natron + " '%1'",
                             "Natron Project file",
-                            "natron/project",
+                            "application/vnd.natron.project",
                             "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico");
 
     component.addElevatedOperation("RegisterFileType",
                             "nl",
                             "",
                             "Natron Layout file",
-                            "natron/layout",
+                            "application/vnd.natron.layout",
                             "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico");
 
     component.addElevatedOperation("RegisterFileType",
                             "nps",
                             "",
                             "Natron Presets file",
-                            "natron/presets",
+                            "application/vnd.natron.nodepresets",
                             "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico");
 
     } catch (e) {
