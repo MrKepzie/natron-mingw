@@ -41,9 +41,11 @@ fi
 if [ "$2" == "workshop" ]; then
   NATRON_VERSION=$NATRON_DEVEL_GIT
   REPO_BRANCH=snapshots
+  APP_INSTALL_SUFFIX=INRIA/Natron-snapshots
 else
   NATRON_VERSION=$NATRON_VERSION_NUMBER
   REPO_BRANCH=releases
+  APP_INSTALL_SUFFIX=INRIA/Natron-$NATRON_VERSION
 fi
 
 DATE=$(date +%Y-%m-%d)
@@ -62,7 +64,7 @@ XML=$INC_PATH/xml
 QS=$INC_PATH/qs
 
 mkdir -p $INSTALLER/config $INSTALLER/packages || exit 1
-cat $INC_PATH/config/config.xml | sed "s/_VERSION_/${NATRON_VERSION_NUMBER}/;s#_OS_BRANCH_BIT_#${REPO_OS}#g;s#_URL_#${REPO_URL}#g" > $INSTALLER/config/config.xml || exit 1
+cat $INC_PATH/config/config.xml | sed "s/_VERSION_/${NATRON_VERSION_NUMBER}/;s#_OS_BRANCH_BIT_#${REPO_OS}#g;s#_URL_#${REPO_URL}#g;s#_APP_INSTALL_SUFFIX_#${APP_INSTALL_SUFFIX}#g" > $INSTALLER/config/config.xml || exit 1
 cp $INC_PATH/config/*.png $INSTALLER/config/ || exit 1
 
 # OFX IO
