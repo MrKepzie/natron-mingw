@@ -124,7 +124,8 @@ MAGICK_TAR=openfx-ImageMagick-6.8.10-1.tar.gz
 GIF_TAR=giflib-5.1.1.tar.gz
 #SSL_TAR=openssl-1.0.0r.tar.gz 
 JASP_TAR=jasper-1.900.1.zip
-INSTALLER_BIN_TAR=natron-win32-installer-extra.zip
+INSTALLER32_BIN_TAR=natron-win32-installer-extra.zip
+INSTALLER64_BIN_TAR=natron-win64-installer-extra.zip
 
 FFMPEG_MXE_BIN_64_GPL_TAR=ffmpeg-2.7.2-windows-x86_64-shared-GPLv2.tar.xz
 FFMPEG_MXE_BIN_32_GPL_TAR=ffmpeg-2.7.2-windows-i686-shared-GPLv2.tar.xz

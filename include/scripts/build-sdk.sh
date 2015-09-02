@@ -15,12 +15,14 @@ if [ "$1" == "32" ]; then
 	PKG_PREFIX=$PKG_PREFIX32
 	FFMPEG_MXE_BIN_GPL=$FFMPEG_MXE_BIN_32_GPL_TAR
 	FFMPEG_MXE_BIN_LGPL=$FFMPEG_MXE_BIN_32_LGPL_TAR
+	INSTALLER_BIN_TAR=$INSTALLER32_BIN_TAR
 elif [ "$1" == "64" ]; then
     BIT=64
     INSTALL_PATH=$INSTALL64_PATH
 	PKG_PREFIX=$PKG_PREFIX64
 	FFMPEG_MXE_BIN_GPL=$FFMPEG_MXE_BIN_64_GPL_TAR
 	FFMPEG_MXE_BIN_LGPL=$FFMPEG_MXE_BIN_64_LGPL_TAR
+	INSTALLER_BIN_TAR=$INSTALLER64_BIN_TAR
 else
     echo "Usage build-sdk.sh <BIT>"
     exit 1
@@ -242,12 +244,19 @@ done
 
 #Make sure we have mt.exe for embedding manifests
 
-if [ -z "/usr/bin/mt.exe" ] || [ "$DOWNLOAD_INSTALLER" == "1" ]; then
+if [ ! -f "${INSTALL_PATH}/bin/repogen.exe" ] || [ "$DOWNLOAD_INSTALLER" == "1" ]; then
 	cd $SRC_PATH
 	wget $THIRD_PARTY_BIN_URL/$INSTALLER_BIN_TAR -O $SRC_PATH/$INSTALLER_BIN_TAR || exit 1
 	unzip $CWD/src/$INSTALLER_BIN_TAR || exit 1
-	cd natron-win32-installer*
-	cp *.exe /usr/bin || exit 1
+	cd natron-win*-installer* || exit 1
+	if [ -d "bin" ]; then
+		cd bin
+	fi
+	cp mt.exe /usr/bin || exit 1
+	cp archivegen.exe $INSTALL_PATH/bin || exit 1
+	cp binarycreator.exe $INSTALL_PATH/bin || exit 1
+	cp installerbase.exe $INSTALL_PATH/bin || exit 1
+	cp repogen.exe $INSTALL_PATH/bin || exit 1
 fi
 
 echo
