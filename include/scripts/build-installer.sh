@@ -305,7 +305,7 @@ if [ "$NO_INSTALLER" != "1" ]; then
   BUNDLED_INSTALL=Natron-$NATRON_VERSION-${PKGOS}-setup.exe
 
   REPO_DIR=$REPO_DIR_PREFIX$ONLINE_TAG
-  rm -rf $REPO_DIR
+  rm -rf $REPO_DIR/packages $REPO_DIR/installers
 
   mkdir -p $REPO_DIR/packages || exit 1
 
