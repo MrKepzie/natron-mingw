@@ -71,7 +71,7 @@ Component.prototype.createOperations = function()
     natron = natron.replace(/\//g, "\\");
     component.addElevatedOperation("RegisterFileType",
                             "ntp",
-                            natron + " '%1'”,
+                            natron + " \"%1\"",
                             "Natron Project file",
                             "application/vnd.natron.project",
                             "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico”,
