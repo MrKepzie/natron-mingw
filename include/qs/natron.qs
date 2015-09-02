@@ -67,26 +67,27 @@ Component.prototype.createOperations = function()
     component.addElevatedOperation("CreateShortcut", "@TargetDir@/bin/Natron.exe", "@DesktopDir@/Natron.lnk",
             "workingDirectory=@TargetDir@");
 
+    var natron =  installer.value("TargetDir") + "\\bin\\Natron.exe";
     component.addElevatedOperation("RegisterFileType",
                             "ntp",
-                            "@TargetDir@" + " '%1'",
+                            natron + " '%1'",
                             "Natron Project file",
                             "natron/project",
-                            "@TargetDir@/natronProjectIcon_windows.ico");
+                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico");
 
     component.addElevatedOperation("RegisterFileType",
                             "nl",
                             "",
                             "Natron Layout file",
                             "natron/layout",
-                            "@TargetDir@/natronProjectIcon_windows.ico");
+                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico");
 
     component.addElevatedOperation("RegisterFileType",
                             "nps",
                             "",
                             "Natron Presets file",
                             "natron/presets",
-                            "@TargetDir@/natronProjectIcon_windows.ico");
+                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico");
 
     } catch (e) {
         print(e);

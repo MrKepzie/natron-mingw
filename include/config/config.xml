@@ -6,7 +6,7 @@
 	<Publisher>INRIA</Publisher>
 	<StartMenuDir>Natron</StartMenuDir>
 	<ProductUrl>http://www.natron.fr</ProductUrl>
-	<RemoveTargetDir>false</RemoveTargetDir>
+	<RemoveTargetDir>true</RemoveTargetDir>
 	<AllowSpaceInPath>true</AllowSpaceInPath>
 	<UninstallerName>NatronSetup</UninstallerName>
 	<InstallerWindowIcon>icon.png</InstallerWindowIcon>

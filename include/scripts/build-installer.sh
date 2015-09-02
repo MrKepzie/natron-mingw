@@ -112,6 +112,8 @@ strip -s $NATRON_PATH/data/bin/Natron*
 wget --no-check-certificate $NATRON_API_DOC || exit 1
 mv natron.pdf $NATRON_PATH/data/docs/Natron_Python_API_Reference.pdf || exit 1
 rm $NATRON_PATH/data/docs/TuttleOFX-README.txt || exit 1
+mkdir -p $NATRON_PATH/data/share/pixmaps || exit 1
+cp $CWD/include/config/natronProjectIcon_windows.ico $NATRON_PATH/data/share/pixmaps/ || exit 1
 strip -s $NATRON_PATH/data/bin/*
 
 # OCIO
@@ -307,15 +309,15 @@ if [ "$NO_INSTALLER" != "1" ]; then
 
   mkdir -p $REPO_DIR/packages || exit 1
 
-  /usr/bin/repogen -v --update-new-components -p $INSTALLER/packages -c $INSTALLER/config/config.xml $REPO_DIR/packages || exit 1
+  repogen -v --update-new-components -p $INSTALLER/packages -c $INSTALLER/config/config.xml $REPO_DIR/packages || exit 1
 
   mkdir -p $REPO_DIR/installers || exit 1
 
   if [ "$OFFLINE" != "0" ]; then
-    /usr/bin/binarycreator -v -f -p $INSTALLER/packages -c $INSTALLER/config/config.xml -i $PACKAGES $REPO_DIR/installers/$BUNDLED_INSTALL || exit 1 
+    binarycreator -v -f -p $INSTALLER/packages -c $INSTALLER/config/config.xml -i $PACKAGES $REPO_DIR/installers/$BUNDLED_INSTALL || exit 1 
   fi
   cd $REPO_DIR/installers || exit 1
-  /usr/bin/binarycreator -v -n -p $INSTALLER/packages -c $INSTALLER/config/config.xml $ONLINE_INSTALL || exit 1
+  binarycreator -v -n -p $INSTALLER/packages -c $INSTALLER/config/config.xml $ONLINE_INSTALL || exit 1
 fi
 
 
