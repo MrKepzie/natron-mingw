@@ -83,7 +83,7 @@ Component.prototype.createOperations = function()
                             "Natron Layout file",
                             "application/vnd.natron.layout",
                             "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico",
-	    		    "ProgId=Inria.Natron.nl”);
+	    		    "ProgId=Inria.Natron.nl");
 
     component.addElevatedOperation("RegisterFileType",
                             "nps",
