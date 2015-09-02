@@ -74,15 +74,15 @@ Component.prototype.createOperations = function()
                             natron + " \"%1\"",
                             "Natron Project file",
                             "application/vnd.natron.project",
-                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico”,
-			    "ProgId=Inria.Natron.ntp”);
+                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico",
+			    "ProgId=Inria.Natron.ntp");
 
     component.addElevatedOperation("RegisterFileType",
                             "nl",
                             "",
                             "Natron Layout file",
                             "application/vnd.natron.layout",
-                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico”,
+                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico",
 	    		    "ProgId=Inria.Natron.nl”);
 
     component.addElevatedOperation("RegisterFileType",
@@ -90,8 +90,8 @@ Component.prototype.createOperations = function()
                             "",
                             "Natron Node Presets file",
                             "application/vnd.natron.nodepresets",
-                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico”,
-			    "ProgId=Inria.Natron.nps”);
+                            "@TargetDir@/share/pixmaps/natronProjectIcon_windows.ico",
+			    "ProgId=Inria.Natron.nps");
 
     } catch (e) {
         print(e);
