@@ -4,10 +4,16 @@
 # Versions
 #
 
-#The local.sh file must exist, please see the README.
-source $(pwd)/local.sh || exit 1
 
 CWD=$(pwd)
+
+#The local.sh file must exist, please see the README.
+if [ -f $CWD/local.sh ]; then
+    source $CWD/local.sh || exit 1
+else
+    REPO_DEST=localhost
+    REPO_URL=http://localhost
+fi
 
 
 #THE FOLLOWING CAN BE MODIFIED TO CONFIGURE RELEASE BUILDS
