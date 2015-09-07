@@ -2,7 +2,6 @@
 #
 # Build Natron for Windows
 #
-#Options: BUILD_DEBUG=1: Build debug binaries of Natron as well
 # BUILD_SNAPSHOT=1: Tag Natron as a snapshot build
 # Usage: build-natron.sh BIT "branch"
 
@@ -120,18 +119,6 @@ else
   echo "CrashReporter missing!!! Something broken?"
 fi
 
-if [ "$BUILD_DEBUG" == "1" ] || [ "$BUILD_SNAPSHOT" != "1" ]; then
-  make clean
-  $INSTALL_PATH/bin/qmake -r CONFIG+=debug ${SNAP} ../Project.pro || exit 1
-  make -j${MKJOBS} || exit 1
-  cp App/debug/Natron.exe $INSTALL_PATH/bin/Natron-debug.exe || exit 1
-  cp Renderer/debug/NatronRenderer.exe $INSTALL_PATH/bin/NatronRenderer-debug.exe || exit 1
-  if [ -f CrashReporter/debug/NatronCrashReporter.exe ]; then
-    cp CrashReporter/debug/NatronCrashReporter.exe $INSTALL_PATH/bin/NatronCrashReporter-debug.exe || exit 1
-  else
-    echo "CrashReporter missing!!! Something broken?"
-  fi
-fi
 
 #Remove all git related stuff before installing color profiles
 (cd ../Gui/Resources/OpenColorIO-Configs ; find . -type d -name .git -exec rm -rf {} \;)

@@ -3,7 +3,7 @@
 # Autobuild for Natron
 #
 
-#Usage snapshot.sh noThreads
+#Usage snapshot.sh <bits> <noThreads>
 
 #Easier to debug
 set -x
@@ -51,7 +51,7 @@ REPO_SUFFIX=snapshot
 LOGS=$REPO_DIR_PREFIX$REPO_SUFFIX/logs
 
 
-if [ "$1" != "" ]; then
+if [ "$2" != "" ]; then
     JOBS=$1
 else
     #Default to 4 threads
