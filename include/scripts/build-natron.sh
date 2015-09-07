@@ -108,7 +108,7 @@ if [ "$BUILD_SNAPSHOT" == "1" ]; then
   SNAP="CONFIG+=snapshot"
 fi
 
-$INSTALL_PATH/bin/qmake -r CONFIG+=release ${SNAP} DEFINES+=QT_NO_DEBUG_OUTPUT ../Project.pro || exit 1
+$INSTALL_PATH/bin/qmake -r CONFIG+=relwithdebinfo ${SNAP} DEFINES+=QT_NO_DEBUG_OUTPUT ../Project.pro || exit 1
 make -j${MKJOBS} || exit 1
 
 cp App/release/Natron.exe $INSTALL_PATH/bin/ || exit 1
