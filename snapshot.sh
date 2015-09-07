@@ -52,7 +52,7 @@ LOGS=$REPO_DIR_PREFIX$REPO_SUFFIX/logs
 
 
 if [ "$2" != "" ]; then
-    JOBS=$1
+    JOBS=$2
 else
     #Default to 4 threads
     JOBS=$DEFAULT_MKJOBS
