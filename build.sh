@@ -93,7 +93,13 @@ fi
 
 REPO_DIR=$REPO_DIR_PREFIX$REPO_SUFFIX
 
+#Make log directory
 LOGS=$REPO_DIR/logs
+rm -rf $LOGS
+if [ ! -d $LOGS ]; then
+    mkdir -p $LOGS || exit 1
+fi
+
 FAIL=0
 
 if [ ! -f $(pwd)/commits-hash.sh ]; then
@@ -107,9 +113,7 @@ if [ ! -f $(pwd)/commits-hash.sh ]; then
     echo "NATRON_VERSION_NUMBER=#" >> $CWD/commits-hash.sh
 fi
 
-if [ ! -d $LOGS ]; then
-  mkdir -p $LOGS || exit 1
-fi
+
 if [ "$NOBUILD" != "1" ]; then
   if [ "$ONLY_PLUGINS" != "1" ]; then
     echo -n "Building Natron ... "
@@ -151,19 +155,20 @@ if [ "$SYNC" == "1" ] && [ "$FAIL" != "1" ]; then
   echo "Syncing packages ... "
 
   if [ "$BRANCH" == "workshop" ]; then
-    LOCAL_REPO_BRANCH=snapshot
     ONLINE_REPO_BRANCH=snapshots
   else
-    LOCAL_REPO_BRANCH=release
     ONLINE_REPO_BRANCH=releases
   fi
-  LOCAL_REPO_DIR=$REPO_DIR_PREFIX$LOCAL_REPO_BRANCH
   BIT_SUFFIX=bit
   BIT_TAG=$BIT$BIT_SUFFIX
 
-  rsync -avz --progress --delete --verbose -e ssh  $LOCAL_REPO_DIR/packages/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/packages
+  rsync -avz --progress --delete --verbose -e ssh  $REPO_DIR/packages/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/packages
 
-  rsync -avz --progress  --verbose -e ssh $LOCAL_REPO_DIR/installers/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/files
+  rsync -avz --progress  --verbose -e ssh $REPO_DIR/installers/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/files
+fi
+
+if [ "$BRANCH" == "workshop" ]; then
+    rsync -avz --progress  --verbose -e ssh $LOGS $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/
 fi
 
 if [ "$FAIL" == "1" ]; then
