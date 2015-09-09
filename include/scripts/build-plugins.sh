@@ -46,14 +46,25 @@ if [ "$2" != "workshop" ]; then
   CV_V=$CVPLUG_GIT_TAG
 fi
 
+if [ "$NATRON_LICENSE" != "GPL" ] && [ "$NATRON_LICENSE" != "COMMERCIAL" ]; then
+    echo "Please select a License with NATRON_LICENSE=(GPL,COMMERCIAL)"
+    exit 1
+fi
+
 
 if [ -d $TMP_PATH ]; then
   rm -rf $TMP_PATH || exit 1
 fi
 mkdir -p $TMP_PATH || exit 1
 
+if [ "$NATRON_LICENSE" == "GPL" ]; then
+    FFMPEG_PATH=$INSTALL_PATH/ffmpeg-GPL
+elif [ "$NATRON_LICENSE" == "COMMERCIAL" ]; then
+    FFMPEG_PATH=$INSTALL_PATH/ffmpeg-LGPL
+fi
 
 # Setup env
+export PKG_CONFIG_PATH=$FFMPEG_PATH/lib/pkgconfig:$PKG_CONFIG_PATH
 export QTDIR=$INSTALL_PATH
 export BOOST_ROOT=$INSTALL_PATH
 export OPENJPEG_HOME=$INSTALL_PATH
