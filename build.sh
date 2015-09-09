@@ -55,7 +55,7 @@ else
 fi
 
 if [ "$2" == "workshop" ]; then
-    BRANCH=$1
+    BRANCH=$2
     REPO_SUFFIX=snapshot
 else
     REPO_SUFFIX=release
