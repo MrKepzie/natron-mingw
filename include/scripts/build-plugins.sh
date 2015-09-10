@@ -118,7 +118,8 @@ MISC_V=$MISC_GIT_VERSION
 sed -i "s/MISCPLUG_DEVEL_GIT=.*/MISCPLUG_DEVEL_GIT=${MISC_V}/" $CWD/commits-hash.sh || exit 1
 
 make -C CImg CImg.h || exit 1
-env CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" make CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+make -C CImg CXXFLAGS_ADD="-fopenmp" LDFLAGS_ADD="-fopenmp" CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
+make CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" CONFIG=relwithdebinfo BITS=$BIT -j${MKJOBS} || exit 1
 
 cp -a */MINGW${BIT}_NT-6.1-64-*/*.ofx.bundle $INSTALL_PATH/Plugins/ || exit 1
 
