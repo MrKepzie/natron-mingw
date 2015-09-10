@@ -88,6 +88,7 @@ fi
 
 # OFX MISC
 if [ "$BUNDLE_MISC" == "1" ]; then 
+	CIMG_DLL="LIBGOMP-1.DLL"
 	OFX_MISC_VERSION=$TAG
 	OFX_MISC_PATH=$INSTALLER/packages/$MISCPLUG_PKG
 	mkdir -p $OFX_MISC_PATH/data $OFX_MISC_PATH/meta $OFX_MISC_PATH/data/Plugins || exit 1
@@ -97,7 +98,13 @@ if [ "$BUNDLE_MISC" == "1" ]; then
 	echo "" >> $OFX_MISC_PATH/meta/ofx-misc-license.txt || exit 1
 	cat $INSTALL_PATH/docs/openfx-misc/LICENSE >> $OFX_MISC_PATH/meta/ofx-misc-license.txt || exit 1
 	cp -a $INSTALL_PATH/Plugins/{CImg,Misc}.ofx.bundle $OFX_MISC_PATH/data/Plugins/ || exit 1
+	
+	for depend in $CIMG_DLL; do
+		cp $INSTALL_PATH/bin/$depend  $OFX_MISC_PATH/data/Plugins/CImg.ofx.bundle/Contents/Win$BIT/ || exit 1
+	done
+	
 	strip -s $OFX_MISC_PATH/data/Plugins/*/*/*/*
+
 fi
 
 # NATRON
@@ -232,6 +239,20 @@ if [ "$BUNDLE_CV" == "1" ]; then
 fi
 
 # manifests
+
+if [ "$BUNDLE_MISC" == "1" ]; then 
+	CIMG_MANIFEST=$OFX_MISC_PATH/data/Plugins/CImg.ofx.bundle/Contents/Win$BIT/manifest
+	echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" > $CIMG_MANIFEST
+	echo "<assembly xmlns=\"urn:schemas-microsoft-com:asm.v1\" manifestVersion=\"1.0\">" >> $CIMG_MANIFEST
+	echo "<assemblyIdentity name=\"CImg.ofx\" version=\"1.0.0.0\" type=\"win32\" processorArchitecture=\"amd64\"/>" >> $CIMG_MANIFEST
+
+	for depend in $CIMG_DLL; do
+		echo "<file name=\"${depend}\"></file>" >> $CIMG_MANIFEST || exit 1
+	done
+	echo "</assembly>" >> $CIMG_MANIFEST || exit 1
+	cd $OFX_MISC_PATH/data/Plugins/CImg.ofx.bundle/Contents/Win$BIT || exit 1
+	mt -manifest manifest -outputresource:"CImg.ofx;2"
+fi
 
 if [ "$BUNDLE_IO" == "1" ]; then 
 	IO_MANIFEST=$OFX_IO_PATH/data/Plugins/IO.ofx.bundle/Contents/Win$BIT/manifest
