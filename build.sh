@@ -168,7 +168,7 @@ if [ "$SYNC" == "1" ] && [ "$FAIL" != "1" ]; then
 fi
 
 if [ "$BRANCH" == "workshop" ]; then
-    rsync -avz --progress --delete --verbose -e ssh $LOGS $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/
+    rsync -avz --progress --delete --verbose -e ssh $LOGS/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/logs
 fi
 
 if [ "$FAIL" == "1" ]; then
