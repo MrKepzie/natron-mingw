@@ -151,25 +151,24 @@ if [ "$NOPKG" != "1" ] && [ "$FAIL" != "1" ]; then
   fi 
 fi
 
-if [ "$SYNC" == "1" ] && [ "$FAIL" != "1" ]; then
-  echo "Syncing packages ... "
-
-  if [ "$BRANCH" == "workshop" ]; then
-    ONLINE_REPO_BRANCH=snapshots
-  else
-    ONLINE_REPO_BRANCH=releases
-  fi
-  BIT_SUFFIX=bit
-  BIT_TAG=$BIT$BIT_SUFFIX
-
-  rsync -avz --progress --delete --verbose -e ssh  $REPO_DIR/packages/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/packages
-
-  rsync -avz --progress  --verbose -e ssh $REPO_DIR/installers/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/files
+if [ "$SYNC" == "1" ]; then
+	if [ "$BRANCH" == "workshop" ]; then
+		ONLINE_REPO_BRANCH=snapshots
+	else
+		ONLINE_REPO_BRANCH=releases
+	fi
+	BIT_SUFFIX=bit
+	BIT_TAG=$BIT$BIT_SUFFIX
+	if [ "$FAIL" != "1" ]; then
+		echo "Syncing packages ... "
+		rsync -avz --progress --delete --verbose -e ssh  $REPO_DIR/packages/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/packages
+		rsync -avz --progress  --verbose -e ssh $REPO_DIR/installers/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/files
+	fi
+	 rsync -avz --progress --delete --verbose -e ssh $LOGS/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/logs
 fi
 
-if [ "$BRANCH" == "workshop" ]; then
-    rsync -avz --progress --delete --verbose -e ssh $LOGS/ $REPO_DEST/$PKGOS/$ONLINE_REPO_BRANCH/$BIT_TAG/logs
-fi
+
+
 
 if [ "$FAIL" == "1" ]; then
   exit 1
