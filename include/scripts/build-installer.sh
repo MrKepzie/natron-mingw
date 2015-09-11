@@ -172,6 +172,8 @@ strip -s $CLIBS_PATH/data/bin/*/*
 
 CORE_DOC=$CLIBS_PATH
 echo "" >> $CORE_DOC/meta/3rdparty-license.txt 
+cat $CWD/include/natron/3rdparty.txt >> $CORE_DOC/meta/3rdparty-license.txt || exit 1
+
 
 #Copy Python distrib
 mkdir -p $CLIBS_PATH/data/Plugins || exit 1
