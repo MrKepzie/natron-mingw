@@ -117,6 +117,7 @@ cat $INSTALL_PATH/docs/natron/LICENSE.txt > $NATRON_PATH/meta/natron-license.txt
 cp $INSTALL_PATH/bin/Natron.exe $NATRON_PATH/data/bin/ || exit 1
 cp $INSTALL_PATH/bin/NatronRenderer.exe $NATRON_PATH/data/bin/ || exit 1
 cp $INSTALL_PATH/bin/NatronCrashReporter.exe $NATRON_PATH/data/bin/ || exit 1
+cp $INSTALL_PATH/bin/NatronRendererCrashReporter.exe $NATRON_PATH/data/bin/ || exit 1
 strip -s $NATRON_PATH/data/bin/Natron*
 wget --no-check-certificate $NATRON_API_DOC || exit 1
 mv natron.pdf $NATRON_PATH/data/docs/Natron_Python_API_Reference.pdf || exit 1

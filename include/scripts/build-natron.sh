@@ -115,6 +115,7 @@ cp App/release/Natron.exe $INSTALL_PATH/bin/ || exit 1
 cp Renderer/release/NatronRenderer.exe $INSTALL_PATH/bin/ || exit 1
 if [ -f CrashReporter/release/NatronCrashReporter.exe ]; then
   cp CrashReporter/release/NatronCrashReporter.exe $INSTALL_PATH/bin/ || exit 1
+  cp CrashReporterCLI/release/NatronRendererCrashReporter.exe $INSTALL_PATH/bin/ || exit 1
 else
   echo "CrashReporter missing!!! Something broken?"
 fi
