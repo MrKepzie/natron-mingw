@@ -157,36 +157,36 @@ if [ ! -f $INSTALL_PATH/lib/pkgconfig/opencv.pc ]; then
   patch -Np1 -i "${CV_PATCHES}/solve_deg3-underflow.patch" || exit 1
   mkdir build || exit 1
   cd build || exit 1
-  env CMAKE_INCLUDE_PATH="$INSTALL_PATH/include $INSTALL_PATH/include/eigen3 $(pwd)" CMAKE_LIBRARY_PATH=$INSTALL_PATH/lib CPPFLAGS="-I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake -G"MSYS Makefiles" -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DWITH_GTK=OFF -DWITH_GSTREAMER=OFF -DWITH_FFMPEG=OFF -DWITH_OPENEXR=OFF -DWITH_OPENCL=OFF -DWITH_OPENGL=ON -DBUILD_WITH_DEBUG_INFO=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_SSE3=OFF ..  || exit 1
+  env CMAKE_LIBRARY_PATH=$INSTALL_PATH/lib CXXFLAGS="-I$INSTALL_PATH/include/eigen3" CFLAGS="-I$INSTALL_PATH/include/eigen3" CPPFLAGS="-I$INSTALL_PATH/include/eigen3 -I${INSTALL_PATH}/include" LDFLAGS="-L${INSTALL_PATH}/lib" cmake -G"MSYS Makefiles" -DCMAKE_INCLUDE_PATH="$INSTALL_PATH/include $INSTALL_PATH/include/eigen3 $(pwd)"  -DCMAKE_INSTALL_PREFIX=$INSTALL_PATH -DWITH_GTK=OFF -DWITH_GSTREAMER=OFF -DWITH_FFMPEG=OFF -DWITH_OPENEXR=OFF -DWITH_OPENCL=OFF -DWITH_OPENGL=ON -DBUILD_WITH_DEBUG_INFO=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release -DENABLE_SSE3=OFF ..  || exit 1
   make -j${MKJOBS} || exit 1
   make install || exit 1
   mkdir -p $INSTALL_PATH/docs/opencv || exit 1
   cp ../LIC* ../COP* ../README ../AUTH* ../CONT* $INSTALL_PATH/docs/opencv/
 fi
 
-# Install ffmpeg
-if [ ! -f $INSTALL_PATH/lib/pkgconfig/libavcodec.pc ]; then
-  cd $MINGW_PACKAGES_PATH/${MINGW_PREFIX}ffmpeg || exit 1
-  makepkg-mingw -sLfC
-  pacman --force -U ${PKG_PREFIX}ffmpeg-*-any.pkg.tar.xz
-fi
+# Install ffmpeg: No longer needed since we use the one built with MXE
+#if [ ! -f $INSTALL_PATH/lib/pkgconfig/libavcodec.pc ]; then
+#  cd $MINGW_PACKAGES_PATH/${MINGW_PREFIX}ffmpeg || exit 1
+#  makepkg-mingw -sLfC
+#  pacman --force -U ${PKG_PREFIX}ffmpeg-*-any.pkg.tar.xz
+#fi
 
 # Install shiboken
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/shiboken-py2.pc ]; then
   cd $MINGW_PACKAGES_PATH/${MINGW_PREFIX}shiboken-qt4 || exit 1
   makepkg-mingw -sLfC
-  pacman --force -U ${PKG_PREFIX}shiboken-1.2.2-1-any.pkg.tar.xz
-  pacman --force -U ${PKG_PREFIX}python2-shiboken-1.2.2-1-any.pkg.tar.xz
-  pacman --force -U ${PKG_PREFIX}python3-shiboken-1.2.2-1-any.pkg.tar.xz
+  pacman --force --noconfirm -U ${PKG_PREFIX}shiboken-1.2.2-1-any.pkg.tar.xz
+  pacman --force --noconfirm -U ${PKG_PREFIX}python2-shiboken-1.2.2-1-any.pkg.tar.xz
+  pacman --force --noconfirm -U ${PKG_PREFIX}python3-shiboken-1.2.2-1-any.pkg.tar.xz
 fi
 
 # Install pyside
 if [ ! -f $INSTALL_PATH/lib/pkgconfig/pyside-py2.pc ]; then
   cd $MINGW_PACKAGES_PATH/${MINGW_PREFIX}pyside-qt4 || exit 1
   makepkg-mingw -sLfC
-  pacman --force -U ${PKG_PREFIX}pyside-common-1.2.2-1-any.pkg.tar.xz
-  pacman --force -U ${PKG_PREFIX}python2-pyside-1.2.2-1-any.pkg.tar.xz
-  pacman --force -U ${PKG_PREFIX}python3-pyside-1.2.2-1-any.pkg.tar.xz
+  pacman --force --noconfirm -U ${PKG_PREFIX}pyside-common-1.2.2-1-any.pkg.tar.xz
+  pacman --force --noconfirm -U ${PKG_PREFIX}python2-pyside-1.2.2-1-any.pkg.tar.xz
+  pacman --force --noconfirm -U ${PKG_PREFIX}python3-pyside-1.2.2-1-any.pkg.tar.xz
 fi
 
 # Install SeExpr
