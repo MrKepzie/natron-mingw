@@ -164,8 +164,8 @@ for depend in $FFMPEG_DLLS; do
 	cp $FFMPEG_BIN_PATH/bin/$depend $CLIBS_PATH/data/bin || exit 1
 done
 #Also embbed ffmpeg.exe and ffprobe.exe
-cp $FFMPEG_BIN_PATH/bin/ffmpeg.exe $CLIBS_PATH/data/bin || exit 1
-cp $FFMPEG_BIN_PATH/bin/ffprobe.exe $CLIBS_PATH/data/bin || exit 1
+#cp $FFMPEG_BIN_PATH/bin/ffmpeg.exe $CLIBS_PATH/data/bin || exit 1
+#cp $FFMPEG_BIN_PATH/bin/ffprobe.exe $CLIBS_PATH/data/bin || exit 1
 
 # TODO: At this point send unstripped binaries (and debug binaries?) to Socorro server for breakpad
 
