@@ -127,6 +127,8 @@ fi
 cp -a ../Gui/Resources/OpenColorIO-Configs $INSTALL_PATH/share/ || exit 1
 mkdir -p $INSTALL_PATH/docs/natron || exit 1
 cp ../LICENSE.txt ../README* ../BUGS* ../CONTRI* ../Documentation/* $INSTALL_PATH/docs/natron/
+mkdir -p $INSTALL_PATH/share/stylesheets || exit 1
+cp ../Gui/Resources/Stylesheets/mainstyle.qss $INSTALL_PATH/share/stylesheets/ || exit 1
 mkdir -p $INSTALL_PATH/share/pixmaps || exit 1
 cp ../Gui/Resources/Images/natronIcon256_linux.png $INSTALL_PATH/share/pixmaps/ || exit 1
 echo $NATRON_REL_V > $INSTALL_PATH/docs/natron/VERSION || exit 1

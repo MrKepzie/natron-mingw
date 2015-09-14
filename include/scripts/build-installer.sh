@@ -109,7 +109,7 @@ fi
 
 # NATRON
 NATRON_PATH=$INSTALLER/packages/$NATRON_PKG
-mkdir -p $NATRON_PATH/meta $NATRON_PATH/data/docs $NATRON_PATH/data/bin || exit 1
+mkdir -p $NATRON_PATH/meta $NATRON_PATH/data/docs $NATRON_PATH/data/bin $NATRON_PATH/data/share || exit 1
 cat $XML/natron.xml | sed "s/_VERSION_/${TAG}/;s/_DATE_/${DATE}/" > $NATRON_PATH/meta/package.xml || exit 1
 cat $QS/natron.qs > $NATRON_PATH/meta/installscript.qs || exit 1
 cp -a $INSTALL_PATH/docs/natron/* $NATRON_PATH/data/docs/ || exit 1
@@ -124,6 +124,7 @@ mv natron.pdf $NATRON_PATH/data/docs/Natron_Python_API_Reference.pdf || exit 1
 rm $NATRON_PATH/data/docs/TuttleOFX-README.txt || exit 1
 mkdir -p $NATRON_PATH/data/share/pixmaps || exit 1
 cp $CWD/include/config/natronProjectIcon_windows.ico $NATRON_PATH/data/share/pixmaps/ || exit 1
+cp $INSTALL_PATH/share/stylesheets/mainstyle.qss $NATRON_PATH/data/share/ || exit 1
 strip -s $NATRON_PATH/data/bin/*
 
 # OCIO
