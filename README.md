@@ -1,3 +1,5 @@
+**This repository has reached is end of life. It has been merged to [MrKepzie/Natron](https://github.com/MrKepzie/Natron/tree/workshop)**
+
 Natron on Windows
 ==================
 
